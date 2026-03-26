@@ -7,6 +7,7 @@ try:
     app.config['SECRET_KEY'] = env
 except Exception as e:
     print(e)
+    
 
 
 @app.route('/signup', methods=['GET', 'POST'])

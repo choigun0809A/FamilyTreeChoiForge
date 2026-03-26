@@ -18,6 +18,9 @@ try:
     members_ref = db.collection('members')
 except Exception as e:
     print(e)
+    requestRef = None
+    members_ref = None
+    
 
 def GmailListed(email):
     try:
