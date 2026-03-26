@@ -1,9 +1,12 @@
 from flask import Flask, render_template, request, session, redirect, jsonify
 import firebase, json, os
 
-app = Flask(__name__)
-env = os.environ['WEB_SECRETKEY_FAM_TREE']
-app.config['SECRET_KEY'] = env
+try:
+    app = Flask(__name__)
+    env = os.environ['WEB_SECRETKEY_FAM_TREE']
+    app.config['SECRET_KEY'] = env
+except Exception as e:
+    print(e)
 
 
 @app.route('/signup', methods=['GET', 'POST'])

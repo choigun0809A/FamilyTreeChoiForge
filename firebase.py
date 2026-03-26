@@ -1,23 +1,24 @@
 from firebase_admin import credentials, initialize_app, db, firestore, auth, GoogleAuthCredentials
 import os, json
 
-envVarDir = os.getenv('FamilyTreeCred')
-envVar = None
-with open(envVarDir, 'r') as f:
-    envVar = json.load(f)
+try:
+    envVarDir = os.getenv('FamilyTreeCred')
+    envVar = None
+    with open(envVarDir, 'r') as f:
+        envVar = json.load(f)
 
-# print(envVar)
+    # print(envVar)
 
-cred = credentials.Certificate(envVar)
-initialize_app(cred)
+    cred = credentials.Certificate(envVar)
+    initialize_app(cred)
 
-db = firestore.client()
+    db = firestore.client()
 
-requestRef = db.collection('requests')
-members_ref = db.collection('members')
-
-from firebase_admin import auth
-
+    requestRef = db.collection('requests')
+    members_ref = db.collection('members')
+except Exception as e:
+    print(e)
+    
 def GmailListed(email):
     try:
         auth.get_user_by_email(email)
