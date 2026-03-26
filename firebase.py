@@ -145,6 +145,16 @@ def get_all_members():
 
 
 def delete_member(uid):
+    member = members_ref.document(uid).get().to_dict()
+    key = f"{member['name'].lower()} ^ {member['uniqueId']}"
+    for child in member['children']:
+        parents = members_ref.document(child).get().to_dict()['parents']
+        parents.remove(key)
+    
+    for parent in member['parents']:
+        children = members_ref.document(parent).get().to_dict()['children']
+        children.remove(key)
+        
     members_ref.document(uid).delete()
 
 def get_all_requests():
