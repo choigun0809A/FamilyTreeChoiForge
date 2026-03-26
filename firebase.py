@@ -10,7 +10,7 @@ db = None
 def load_firebase():
     global requestRef, members_ref, db, cred
     try:
-        envVar = os.getenv('FamilyTreeCred')
+        envVar = os.environ['FamilyTreeCred']
 
         # print(envVar)
 
