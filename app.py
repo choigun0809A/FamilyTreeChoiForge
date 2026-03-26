@@ -38,13 +38,13 @@ def login():
         json_data = request.get_json()
         email = json_data.get('email')
         password = json_data.get('password')
-        uid, isVerified = firebase.login(email, password)
+        uid, isVerified, correct_password = firebase.login(email, password)
         
-        if uid and isVerified:
+        if uid and isVerified and correct_password:
             session['uid'] = uid
             session["verified"] = True
             return jsonify({'success': True, 'message': 'Login successful! Redirecting...'}), 200
-        elif firebase.UidInRequests(uid) and isVerified:
+        elif firebase.UidInRequests(uid) and not correct_password:
             return jsonify({'success': False, 'message': 'Invalid email or password.'}), 401
         elif firebase.UidInRequests(uid) and not isVerified:
             return jsonify({'success': False, 'message': 'Please wait for verification.'}), 401

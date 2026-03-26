@@ -81,174 +81,176 @@
     </style>
   </head>
   <body class="p-4 lg:p-8 relative">
-    <div id="sidebarBackdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-40 hidden lg:hidden"></div>
+    <div id="sidebarBackdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-40 hidden lg:hidden"></div>
 
-    <header class="max-w-[1600px] mx-auto flex justify-between items-center mb-8">
+    <header class="max-w-[1600px] mx-auto flex justify-between items-center mb-6">
       <div class="flex items-center gap-4">
-        <button onclick="toggleSidebar()" class="lg:hidden bg-white p-3 rounded-xl shadow-sm border border-slate-200 text-xl">
-          ☰
+        <button onclick="toggleSidebar()" class="lg:hidden bg-white p-3 rounded-2xl shadow-sm border border-slate-200 hover:bg-slate-50">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
         </button>
-        <h1 class="text-3xl font-bold text-indigo-900 flex items-center gap-2">
-          <span class="hidden sm:inline">Family Heritage</span>
-        </h1>
+        <div>
+            <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Family Heritage</h1>
+            <p class="text-sm text-slate-500 font-medium hidden sm:block">Nexus Biological Database</p>
+        </div>
       </div>
       <button
         onclick="showAddForm()"
-        class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm sm:text-lg font-bold px-4 sm:px-8 py-3 rounded-2xl shadow-lg transition-transform active:scale-95"
+        class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-3 rounded-2xl shadow-lg shadow-indigo-200 transition-all active:scale-95 flex items-center gap-2"
       >
-        + Add <span class="hidden sm:inline">New Member</span>
+        <span class="text-xl">+</span> Add Member
       </button>
     </header>
 
-    <main class="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 relative">
+    <main class="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
       
-      <div id="sidebar" class="fixed top-0 left-0 h-full w-10/12 max-w-sm bg-white shadow-2xl z-50 transform -translate-x-full transition-transform duration-300 ease-in-out lg:static lg:transform-none lg:col-span-3 lg:rounded-3xl lg:shadow-sm border border-slate-200 overflow-hidden flex flex-col lg:h-[85vh]">
-        <div class="p-5 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
-          <h2 class="text-xl font-bold">Family Members</h2>
-          <button onclick="toggleSidebar()" class="lg:hidden text-2xl text-slate-500 hover:text-slate-800">&times;</button>
+      <aside id="sidebar" class="fixed top-0 left-0 h-full w-80 bg-white shadow-2xl z-50 transform -translate-x-full transition-transform duration-300 lg:static lg:transform-none lg:col-span-3 lg:rounded-[2rem] lg:shadow-sm border border-slate-200 overflow-hidden flex flex-col lg:h-[82vh]">
+        <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+          <h2 class="text-lg font-bold text-slate-800 uppercase tracking-wider">Directory</h2>
+          <button onclick="toggleSidebar()" class="lg:hidden text-slate-400">&times;</button>
         </div>
-        <div
-          id="membersList"
-          class="flex-1 overflow-y-auto p-4 space-y-3 custom-scroll"
-        ></div>
-      </div>
-
-      <div class="lg:col-span-6 bg-white rounded-3xl shadow-md border border-slate-200 flex flex-col h-[85vh] relative overflow-hidden">
-        <div class="p-5 border-b border-slate-100 flex justify-between items-center">
-          <h2 class="text-xl font-bold text-slate-700">Family Visualization</h2>
-          <div class="flex items-center gap-3">
-            <span class="text-sm bg-slate-100 px-3 py-1 rounded-full text-slate-500 hidden sm:block">Tap to Focus</span>
-            <button id="mobileEditBtn" onclick="toggleDetails()" class="hidden lg:hidden bg-slate-900 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-md transition-all active:scale-95">
-              ✎ Edit Info
-            </button>
+        <div id="membersList" class="flex-1 overflow-y-auto p-4 space-y-2 custom-scroll bg-slate-50/50">
           </div>
+      </aside>
+
+      <section class="lg:col-span-6 bg-white rounded-[2rem] shadow-sm border border-slate-200 flex flex-col h-[82vh] relative overflow-hidden">
+        <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-white/50 backdrop-blur-sm sticky top-0 z-30">
+          <h2 class="text-lg font-bold text-slate-800 uppercase tracking-wider">Visualization</h2>
+          <button id="mobileEditBtn" onclick="toggleDetails()" class="lg:hidden bg-slate-900 text-white px-4 py-2 rounded-xl text-xs font-bold">
+            Edit Data
+          </button>
         </div>
 
-        <div id="treeVisualizer" class="flex-1 overflow-y-auto p-4 custom-scroll space-y-4">
-          <div class="text-center">
-            <span class="text-xs font-bold uppercase tracking-widest text-slate-400">Parents</span>
-            <div id="rowParents" class="row-container overflow-x-auto custom-scroll"></div>
-          </div>
+        <div id="treeVisualizer" class="flex-1 overflow-y-auto p-2 custom-scroll bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] [background-size:20px_20px]">
+          <div class="py-8">
+            <div class="text-center mb-2">
+                <span class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Ascendants (Parents)</span>
+            </div>
+            <div id="rowParents" class="row-container custom-scroll"></div>
 
-          <div class="generation-gap"></div>
+            <div class="generation-gap"></div>
 
-          <div class="text-center">
-            <span class="text-xs font-bold uppercase tracking-widest text-indigo-400">Current Generation</span>
-            <div id="rowCurrent" class="row-container overflow-x-auto custom-scroll"></div>
-          </div>
+            <div class="text-center mb-2">
+                <span class="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-500">Subject & Siblings</span>
+            </div>
+            <div id="rowCurrent" class="row-container custom-scroll"></div>
 
-          <div class="generation-gap"></div>
+            <div class="generation-gap"></div>
 
-          <div class="text-center">
-            <span class="text-xs font-bold uppercase tracking-widest text-slate-400">Children</span>
-            <div id="rowChildren" class="row-container overflow-x-auto custom-scroll"></div>
+            <div class="text-center mb-2">
+                <span class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Descendants (Children)</span>
+            </div>
+            <div id="rowChildren" class="row-container custom-scroll"></div>
           </div>
         </div>
 
-        <div id="noSelectionMsg" class="absolute inset-0 bg-white/90 flex flex-col items-center justify-center text-center p-10 z-20">
-          <div class="text-6xl mb-4">👥</div>
-          <h3 class="text-2xl font-bold text-slate-800">No Member Selected</h3>
-          <p class="text-slate-500 mt-2">
-            Please select a person from the left list to visualize their family branches.
+        <div id="noSelectionMsg" class="absolute inset-0 bg-slate-50/95 flex flex-col items-center justify-center text-center p-12 z-40 transition-all">
+          <div class="w-20 h-20 bg-white rounded-3xl shadow-sm flex items-center justify-center text-4xl mb-6 border border-slate-100">🧬</div>
+          <h3 class="text-xl font-bold text-slate-800">Initialize Visualizer</h3>
+          <p class="text-slate-500 mt-2 max-w-xs text-sm leading-relaxed">
+            Select a subject from the directory to build the generational branch.
           </p>
         </div>
-      </div>
+      </section>
 
-      <div id="detailsWrapper" class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 lg:static lg:bg-transparent lg:p-0 lg:opacity-100 lg:pointer-events-auto lg:col-span-3 lg:block lg:backdrop-blur-none">
-        
-        <div class="bg-slate-900 rounded-[2rem] lg:rounded-3xl shadow-2xl lg:shadow-xl p-6 text-white w-full max-w-lg max-h-[90vh] lg:max-h-none lg:h-[85vh] overflow-y-auto custom-scroll relative">
+      <aside id="detailsWrapper" class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm opacity-0 pointer-events-none transition-all lg:static lg:bg-transparent lg:p-0 lg:opacity-100 lg:pointer-events-auto lg:col-span-3 lg:block">
+        <div class="bg-slate-900 rounded-[2.5rem] p-8 text-white w-full max-w-md lg:h-[82vh] overflow-y-auto custom-scroll shadow-2xl relative border border-white/10">
           
-          <button onclick="toggleDetails()" class="lg:hidden absolute top-4 right-4 text-3xl text-slate-400 hover:text-white leading-none">&times;</button>
+          <button onclick="toggleDetails()" class="lg:hidden absolute top-6 right-6 text-2xl text-slate-500">&times;</button>
 
-          <div id="detailsPanel" class="hidden space-y-6 mt-2 lg:mt-0">
-            <h2 class="text-2xl font-bold border-b border-slate-700 pb-4 pr-8">
-              Member Profile
-            </h2>
+          <div id="detailsPanel" class="hidden space-y-8">
+            <header>
+                <h2 class="text-xs font-black uppercase tracking-[0.3em] text-indigo-400 mb-2">Data Profile</h2>
+                <h3 class="text-2xl font-bold">Member Information</h3>
+            </header>
 
-            <div>
-              <label class="block text-sm font-semibold text-slate-400 mb-2">Full Name</label>
-              <input id="editName" type="text" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-lg focus:ring-2 focus:ring-indigo-500 outline-none" />
-            </div>
-
-            <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-4">
               <div>
-                <label class="block text-sm font-semibold text-slate-400 mb-2">Gender</label>
-                <select id="editGender" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none">
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Other">Other</option>
-                </select>
+                <label class="text-[10px] font-bold uppercase text-slate-500 ml-1">Legal Name</label>
+                <input id="editName" type="text" class="w-full bg-slate-800/50 border border-slate-700 rounded-2xl px-5 py-4 mt-1 focus:ring-2 focus:ring-indigo-500 outline-none transition-all" />
               </div>
-              <div>
-                <label class="block text-sm font-semibold text-slate-400 mb-2">Birth Date</label>
-                <input id="editBirthDate" type="date" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none" />
+
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="text-[10px] font-bold uppercase text-slate-500 ml-1">Gender</label>
+                  <select id="editGender" class="w-full bg-slate-800/50 border border-slate-700 rounded-2xl px-4 py-4 mt-1 outline-none">
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold uppercase text-slate-500 ml-1">Birth Date</label>
+                    <input id="editBirthDate" type="date" class="w-full bg-slate-800/50 border border-slate-700 rounded-2xl px-4 py-4 mt-1 outline-none text-sm" />
+                </div>
               </div>
             </div>
 
-            <div class="pt-6 border-t border-slate-700">
-              <button onclick="autoSave()" class="w-full bg-green-600 hover:bg-green-700 py-4 rounded-2xl font-bold text-xl transition-all shadow-lg">
-                Update Details
-              </button>
-            </div>
+            <button onclick="autoSave()" class="w-full bg-indigo-600 hover:bg-indigo-500 py-4 rounded-2xl font-bold text-lg transition-all shadow-lg shadow-indigo-900/20">
+              Save Changes
+            </button>
 
-            <div class="space-y-4 pt-4">
-              <p class="text-sm font-bold text-slate-500 uppercase">Quick Add / Remove Relationships</p>
+            <div class="space-y-3 pt-6 border-t border-white/5">
+              <p class="text-[10px] font-black uppercase tracking-widest text-slate-500">Link Relationships</p>
               
-              <button onclick="toggleParentForm()" class="w-full bg-slate-800 hover:bg-slate-700 p-4 rounded-xl text-left flex justify-between items-center">
-                <span>+ Add Parent</span>
-                <span class="text-indigo-400">→</span>
+              <button onclick="toggleParentForm()" class="w-full bg-slate-800/40 hover:bg-slate-800 p-4 rounded-2xl text-left flex justify-between items-center group transition-all">
+                <span class="text-sm font-semibold">Assign Parent</span>
+                <span class="text-indigo-400 group-hover:translate-x-1 transition-transform">→</span>
               </button>
-              <div id="parentForm" class="hidden bg-slate-800 p-4 rounded-xl space-y-3">
-                <input id="newParentName" placeholder="Parent Name" class="w-full bg-slate-700 p-2 rounded" />
-                <input id="newParentId" placeholder="Parent ID" type="number" class="w-full bg-slate-700 p-2 rounded" />
-                <button onclick="addParent()" class="w-full bg-indigo-600 p-2 rounded font-bold">Confirm</button>
+              <div id="parentForm" class="hidden bg-slate-800/60 p-4 rounded-2xl space-y-3 border border-indigo-500/20">
+                <input id="newParentName" placeholder="Parent Name" class="w-full bg-slate-900 px-4 py-2 rounded-xl text-sm" />
+                <input id="newParentId" placeholder="Parent ID" type="number" class="w-full bg-slate-900 px-4 py-2 rounded-xl text-sm" />
+                <button onclick="addParent()" class="w-full bg-indigo-600 py-2 rounded-xl text-sm font-bold">Link Parent</button>
               </div>
 
-              <button onclick="toggleChildForm()" class="w-full bg-slate-800 hover:bg-slate-700 p-4 rounded-xl text-left flex justify-between items-center">
-                <span>+ Add Child</span>
-                <span class="text-indigo-400">→</span>
+              <button onclick="toggleChildForm()" class="w-full bg-slate-800/40 hover:bg-slate-800 p-4 rounded-2xl text-left flex justify-between items-center group transition-all">
+                <span class="text-sm font-semibold">Assign Child</span>
+                <span class="text-indigo-400 group-hover:translate-x-1 transition-transform">→</span>
               </button>
-              <div id="childForm" class="hidden bg-slate-800 p-4 rounded-xl space-y-3">
-                <input id="newChildName" placeholder="Child Name" class="w-full bg-slate-700 p-2 rounded" />
-                <input id="newChildId" placeholder="Child ID" type="number" class="w-full bg-slate-700 p-2 rounded" />
-                <button onclick="addChild()" class="w-full bg-indigo-600 p-2 rounded font-bold">Confirm</button>
+              <div id="childForm" class="hidden bg-slate-800/60 p-4 rounded-2xl space-y-3 border border-indigo-500/20">
+                <input id="newChildName" placeholder="Child Name" class="w-full bg-slate-900 px-4 py-2 rounded-xl text-sm" />
+                <input id="newChildId" placeholder="Child ID" type="number" class="w-full bg-slate-900 px-4 py-2 rounded-xl text-sm" />
+                <button onclick="addChild()" class="w-full bg-indigo-600 py-2 rounded-xl text-sm font-bold">Link Child</button>
               </div>
             </div>
           </div>
 
-          <div id="noDetailsMsg" class="h-full flex items-center justify-center text-slate-500 text-center pb-10">
-            <p>Select a member to edit their information</p>
+          <div id="noDetailsMsg" class="h-full flex flex-col items-center justify-center text-slate-500 text-center opacity-40">
+            <p class="text-4xl mb-4">📝</p>
+            <p class="text-sm font-medium">Select a profile to edit</p>
           </div>
         </div>
-      </div>
+      </aside>
     </main>
 
-    <div id="addModal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center z-[70] p-4">
-        <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-xl overflow-hidden p-8">
-        <h2 class="text-3xl font-bold mb-6">Register New Member</h2>
+    <div id="addModal" class="hidden fixed inset-0 bg-slate-950/60 backdrop-blur-md flex items-center justify-center z-[100] p-4">
+        <div class="bg-white rounded-[3rem] shadow-2xl w-full max-w-lg overflow-hidden p-10 border border-slate-100">
+        <h2 class="text-3xl font-black text-slate-900 mb-2">New Registry</h2>
+        <p class="text-slate-500 mb-8 font-medium">Add a new individual to the heritage database.</p>
+        
         <form id="addMemberForm" class="space-y-6">
           <div>
-            <label class="block text-lg font-medium text-slate-700 mb-2">What is their full name?</label>
-            <input type="text" id="name" required class="w-full px-6 py-4 rounded-2xl border-2 border-slate-200 focus:border-indigo-500 outline-none text-xl" placeholder="e.g. Bat-Erdene" />
+            <label class="text-[10px] font-black uppercase text-slate-400 ml-1">Full Identity Name</label>
+            <input type="text" id="name" required class="w-full px-6 py-4 mt-2 rounded-2xl border-2 border-slate-100 focus:border-indigo-500 focus:bg-white bg-slate-50 outline-none text-lg transition-all" placeholder="e.g. John Smith" />
           </div>
           <div class="grid grid-cols-2 gap-6">
             <div>
-              <label class="block text-lg font-medium text-slate-700 mb-2">Gender</label>
-              <select id="gender" required class="w-full px-6 py-4 rounded-2xl border-2 border-slate-200 focus:border-indigo-500 outline-none text-xl">
+              <label class="text-[10px] font-black uppercase text-slate-400 ml-1">Gender</label>
+              <select id="gender" required class="w-full px-5 py-4 mt-2 rounded-2xl border-2 border-slate-100 focus:border-indigo-500 bg-slate-50 outline-none">
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
                 <option value="Other">Other</option>
               </select>
             </div>
             <div>
-              <label class="block text-lg font-medium text-slate-700 mb-2">Birth Date</label>
-              <input type="date" id="birthDate" class="w-full px-6 py-4 rounded-2xl border-2 border-slate-200 outline-none text-xl" />
+              <label class="text-[10px] font-black uppercase text-slate-400 ml-1">Birth Date</label>
+              <input type="date" id="birthDate" class="w-full px-5 py-4 mt-2 rounded-2xl border-2 border-slate-100 outline-none bg-slate-50" />
             </div>
           </div>
         </form>
+
         <div class="flex gap-4 mt-10">
-          <button onclick="hideAddForm()" class="flex-1 py-4 text-slate-500 font-bold text-xl hover:bg-slate-50 rounded-2xl">Cancel</button>
-          <button onclick="addNewMember()" class="flex-1 bg-indigo-600 text-white font-bold text-xl py-4 rounded-2xl shadow-lg hover:bg-indigo-700">Add to Tree</button>
+          <button onclick="hideAddForm()" class="flex-1 py-4 text-slate-400 font-bold hover:text-slate-600 transition-colors">Dismiss</button>
+          <button onclick="addNewMember()" class="flex-1 bg-indigo-600 text-white font-bold py-4 rounded-2xl shadow-xl shadow-indigo-200 hover:bg-indigo-700 transition-all">Create Record</button>
         </div>
       </div>
     </div>

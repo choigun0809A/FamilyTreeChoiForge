@@ -1,35 +1,38 @@
 from firebase_admin import credentials, initialize_app, db, firestore, auth, GoogleAuthCredentials
 import os, json
 
-requestRef: firestore.CollectionReference = None
-members_ref: firestore.CollectionReference = None
-cred = None
-db = None
+if False:
 
 
-def load_firebase():
-    global requestRef, members_ref, db, cred
-    try:
-        envVar = json.loads(os.environ['FamilyTreeCred'])
+    envVarPath = os.environ.get('FamilyTreeCred')
+    envVar = None
+    with open(envVarPath, 'r') as f:
+        envVar = json.load(f)
 
-        
+    cred = credentials.Certificate(envVar)
+    initialize_app(cred)
 
-        cred = credentials.Certificate(envVar)
-        initialize_app(cred)
+    db = firestore.client()
 
-        db = firestore.client()
+    requestRef = db.collection('requests')
+    members_ref = db.collection('members')
+    print("loaded!")
+else:
+    envVar = os.environ.get('FamilyTreeCred')
 
-        requestRef = db.collection('requests')
-        members_ref = db.collection('members')
-        print("loaded!")
-    except Exception as e:
-        print(e)
+    cred = credentials.Certificate(envVar)
+    initialize_app(cred)
+
+    db = firestore.client()
+
+    requestRef = db.collection('requests')
+    members_ref = db.collection('members')
+    print("loaded!")
     
     
 
 def GmailListed(email):
-    if requestRef == None:
-        load_firebase()
+    
     try:
         auth.get_user_by_email(email)
         return True
@@ -40,8 +43,7 @@ def GmailListed(email):
         return False
     
 def Verified(gmail):
-    if requestRef == None:
-        load_firebase()
+    
     try:
         user = auth.get_user_by_email(gmail)
         return requestRef.document(user.uid).get().to_dict().get('verified', False)
@@ -50,8 +52,7 @@ def Verified(gmail):
         return False
 
 def VerifiedUid(uid):
-    if requestRef == None:
-        load_firebase()
+    
     try:
         return requestRef.document(uid).get().to_dict().get('verified', False)
     except Exception as e:
@@ -59,8 +60,7 @@ def VerifiedUid(uid):
         return False
     
 def UidInRequests(uid):
-    if requestRef == None:
-        load_firebase()
+    
     try:
         return requestRef.document(uid).get().exists
     except Exception as e:
@@ -68,8 +68,7 @@ def UidInRequests(uid):
         return False
 
 def signup(email, password):
-    if requestRef == None:
-        load_firebase()
+    
     try:
         user = auth.create_user(
             email=email,
@@ -95,22 +94,26 @@ def signup(email, password):
         return None, False
 
 def login(email, password):
-    if requestRef == None:
-        load_firebase()
+    
     try:
         user = auth.get_user_by_email(email)
         if Verified(email):
             if db.collection('requests').document(user.uid).get().to_dict().get('password') == password:
-                return user.uid, True
+                return user.uid, True, True
+            else:
+                return user.uid, True, False
+        else:
+            if db.collection('requests').document(user.uid).get().to_dict().get('password') == password:
+                return user.uid, False, True
+            else:
+                return user.uid, False, False
         
-        return user.uid, False
     except Exception as e:
         print(e)
-        return None, None
+        return None, None, None
 
 def add_member(name, uniqueId = 0, gender = '', birthDate = ''):
-    if requestRef == None:
-        load_firebase()
+    
     members_ref.document(f"{name.lower()} ^ {uniqueId}").set({
         'name': name,
         'gender': gender,
@@ -121,38 +124,32 @@ def add_member(name, uniqueId = 0, gender = '', birthDate = ''):
     })
 
 def update_member(key, member = {}):
-    if requestRef == None:
-        load_firebase()
+    
     members_ref.document(key).delete()
     members_ref.document(f'{member.get("name").lower()} ^ {member.get("uniqueId")}').set(member)
 
 def check_member(name, uniqueId = 0):
-    if requestRef == None:
-        load_firebase()
+    
     return members_ref.document(f"{name} ^ {uniqueId}").get().exists
 
 def get_member(name, uniqueId = 0):
-    if requestRef == None:
-        load_firebase()
+    
     return members_ref.document(f"{name} ^ {uniqueId}").get().to_dict()
 
 def get_all_members():
-    if requestRef == None:
-        load_firebase()
+    
     members = {}
     for member in members_ref.get():
         members[member.id] = member.to_dict()
     return members
 
 def get_all_requests():
-    if requestRef == None:
-        load_firebase()
+    
     requests = {}
     for request in requestRef.get():
         requests[request.id] = request.to_dict()
     return requests
 
 def update_request(uid, data):
-    if requestRef == None:
-        load_firebase()
+    
     requestRef.document(uid).update(data)
