@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nexus | Create Identity</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=JetBrains+Mono&display=swap");
+
+        body {
+            font-family: "Plus Jakarta Sans", sans-serif;
+            background-color: #0f172a;
+            /* Subtle grid pattern background */
+            background-image: 
+                linear-gradient(rgba(30, 41, 59, 0.5) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(30, 41, 59, 0.5) 1px, transparent 1px);
+            background-size: 40px 40px;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .glass-card {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+        }
+
+        .input-field {
+            background: rgba(30, 41, 59, 0.5) !important;
+            border: 1px solid #334155 !important;
+            color: white !important;
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
+            border-color: #6366f1 !important;
+            background: rgba(30, 41, 59, 0.8) !important;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+        }
+
+        .nexus-btn {
+            background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nexus-btn:hover {
+            filter: brightness(1.2);
+            transform: translateY(-1px);
+            box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.4);
+        }
+    </style>
+</head>
+<body class="p-4">
+    <div class="max-w-[440px] w-full">
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 mb-4">
+                <i class="fas fa-plus-circle text-2xl text-indigo-400"></i>
+            </div>
+            <h1 class="text-3xl font-extrabold text-white tracking-tight">Create Identity</h1>
+            <p class="text-slate-400 mt-2 font-medium">Initialize your Nexus credentials</p>
+        </div>
+
+        <div class="glass-card rounded-[2.5rem] p-8 md:p-10">
+            <form id="signupForm" class="space-y-5">
+                <div class="space-y-2">
+                    <label class="text-xs font-black uppercase tracking-widest text-slate-500 ml-1" for="email">
+                        Email Buffer
+                    </label>
+                    <input
+                        type="email"
+                        id="email"
+                        required
+                        placeholder="user@nexus.io"
+                        class="input-field w-full px-5 py-4 rounded-2xl outline-none placeholder:text-slate-600"
+                    />
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-xs font-black uppercase tracking-widest text-slate-500 ml-1" for="password">
+                        Access Key
+                    </label>
+                    <input
+                        type="password"
+                        id="password"
+                        required
+                        minlength="8"
+                        placeholder="••••••••"
+                        class="input-field w-full px-5 py-4 rounded-2xl outline-none font-mono"
+                    />
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-xs font-black uppercase tracking-widest text-slate-500 ml-1" for="confirm_password">
+                        Confirm Key
+                    </label>
+                    <input
+                        type="password"
+                        id="confirm_password"
+                        required
+                        placeholder="••••••••"
+                        class="input-field w-full px-5 py-4 rounded-2xl outline-none font-mono"
+                    />
+                </div>
+
+                <button
+                    type="submit"
+                    id="submitBtn"
+                    class="nexus-btn w-full text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-3 mt-4"
+                >
+                    <span id="btnText">Establish Connection</span>
+                    <span
+                        id="loadingSpinner"
+                        class="hidden animate-spin h-5 w-5 border-2 border-white/30 border-t-white rounded-full"
+                    ></span>
+                </button>
+            </form>
+
+            <div class="mt-8 pt-6 border-t border-white/5 text-center">
+                <p class="text-sm text-slate-400">
+                    Already registered? 
+                    <a href="/login" class="text-indigo-400 hover:text-indigo-300 font-bold ml-1 transition-colors">Sign In</a>
+                </p>
+            </div>
+        </div>
+
+        <div class="text-center mt-8 space-y-2">
+            <p class="text-[10px] text-slate-600 font-black uppercase tracking-[0.4em]">
+                Nexus Encryption Protocol v4.0
+            </p>
+            <p class="text-[10px] text-slate-700 font-medium">
+                &copy; 2026 CHOIFORGE TERMINAL. ALL RIGHTS RESERVED.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById("signupForm");
+        const submitBtn = document.getElementById("submitBtn");
+        const btnText = document.getElementById("btnText");
+        const loadingSpinner = document.getElementById("loadingSpinner");
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value;
+            const confirmPassword = document.getElementById("confirm_password").value;
+
+            if (password !== confirmPassword) {
+                showFeedback("Security Alert: Key mismatch detected.", "red");
+                return;
+            }
+
+            // Set loading UI
+            btnText.textContent = "Processing...";
+            loadingSpinner.classList.remove("hidden");
+            submitBtn.disabled = true;
+
+            try {
+                const response = await fetch("/signup", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, password }),
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert("Account Synced Successfully. Redirecting to Login...");
+                    window.location.href = "/login";
+                } else {
+                    alert("Initialization Failed: " + data.message);
+                }
+            } catch (error) {
+                alert("Terminal Error: Check Uplink Connection.");
+            } finally {
+                btnText.textContent = "Establish Connection";
+                loadingSpinner.classList.add("hidden");
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Helper for internal status messages if you add an alert box later
+        function showFeedback(msg, color) {
+            alert(msg);
+        }
+    </script>
+</body>
+</html>

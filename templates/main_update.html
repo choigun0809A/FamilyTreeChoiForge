@@ -1,0 +1,717 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Modern Family Tree</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f8fafc;
+        color: #1e293b;
+      }
+      button,
+      input,
+      select {
+        min-height: 48px;
+      }
+      .custom-scroll {
+        scrollbar-width: thin;
+        scrollbar-color: #cbd5e1 transparent;
+      }
+      .custom-scroll::-webkit-scrollbar {
+        height: 6px;
+        width: 6px;
+      }
+      .custom-scroll::-webkit-scrollbar-thumb {
+        background-color: #cbd5e1;
+        border-radius: 10px;
+      }
+      .tree-card {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 2px solid transparent;
+        position: relative;
+      }
+      .tree-card.active {
+        border-color: #4f46e5;
+        background-color: #eef2ff;
+        transform: scale(1.05);
+        z-index: 10;
+      }
+      .row-container {
+        display: flex;
+        gap: 1.5rem;
+        padding: 1rem;
+        justify-content: center;
+        align-items: center;
+        min-height: 180px;
+      }
+      .generation-gap {
+        height: 40px;
+        width: 2px;
+        background: #cbd5e1;
+        margin: 0 auto;
+      }
+      .remove-btn {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background: #ef4444;
+        color: white;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        font-weight: bold;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        opacity: 0;
+        transition: all 0.2s;
+      }
+      .tree-card:hover .remove-btn {
+        opacity: 1;
+      }
+    </style>
+  </head>
+  <body class="p-4 lg:p-8 relative">
+    <div id="sidebarBackdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-40 hidden lg:hidden"></div>
+
+    <header class="max-w-[1600px] mx-auto flex justify-between items-center mb-8">
+      <div class="flex items-center gap-4">
+        <button onclick="toggleSidebar()" class="lg:hidden bg-white p-3 rounded-xl shadow-sm border border-slate-200 text-xl">
+          ☰
+        </button>
+        <h1 class="text-3xl font-bold text-indigo-900 flex items-center gap-2">
+          <span class="hidden sm:inline">Family Heritage</span>
+        </h1>
+      </div>
+      <button
+        onclick="showAddForm()"
+        class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm sm:text-lg font-bold px-4 sm:px-8 py-3 rounded-2xl shadow-lg transition-transform active:scale-95"
+      >
+        + Add <span class="hidden sm:inline">New Member</span>
+      </button>
+    </header>
+
+    <main class="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 relative">
+      
+      <div id="sidebar" class="fixed top-0 left-0 h-full w-10/12 max-w-sm bg-white shadow-2xl z-50 transform -translate-x-full transition-transform duration-300 ease-in-out lg:static lg:transform-none lg:col-span-3 lg:rounded-3xl lg:shadow-sm border border-slate-200 overflow-hidden flex flex-col lg:h-[85vh]">
+        <div class="p-5 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
+          <h2 class="text-xl font-bold">Family Members</h2>
+          <button onclick="toggleSidebar()" class="lg:hidden text-2xl text-slate-500 hover:text-slate-800">&times;</button>
+        </div>
+        <div
+          id="membersList"
+          class="flex-1 overflow-y-auto p-4 space-y-3 custom-scroll"
+        ></div>
+      </div>
+
+      <div class="lg:col-span-6 bg-white rounded-3xl shadow-md border border-slate-200 flex flex-col h-[85vh] relative overflow-hidden">
+        <div class="p-5 border-b border-slate-100 flex justify-between items-center">
+          <h2 class="text-xl font-bold text-slate-700">Family Visualization</h2>
+          <div class="flex items-center gap-3">
+            <span class="text-sm bg-slate-100 px-3 py-1 rounded-full text-slate-500 hidden sm:block">Tap to Focus</span>
+            <button id="mobileEditBtn" onclick="toggleDetails()" class="hidden lg:hidden bg-slate-900 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-md transition-all active:scale-95">
+              ✎ Edit Info
+            </button>
+          </div>
+        </div>
+
+        <div id="treeVisualizer" class="flex-1 overflow-y-auto p-4 custom-scroll space-y-4">
+          <div class="text-center">
+            <span class="text-xs font-bold uppercase tracking-widest text-slate-400">Parents</span>
+            <div id="rowParents" class="row-container overflow-x-auto custom-scroll"></div>
+          </div>
+
+          <div class="generation-gap"></div>
+
+          <div class="text-center">
+            <span class="text-xs font-bold uppercase tracking-widest text-indigo-400">Current Generation</span>
+            <div id="rowCurrent" class="row-container overflow-x-auto custom-scroll"></div>
+          </div>
+
+          <div class="generation-gap"></div>
+
+          <div class="text-center">
+            <span class="text-xs font-bold uppercase tracking-widest text-slate-400">Children</span>
+            <div id="rowChildren" class="row-container overflow-x-auto custom-scroll"></div>
+          </div>
+        </div>
+
+        <div id="noSelectionMsg" class="absolute inset-0 bg-white/90 flex flex-col items-center justify-center text-center p-10 z-20">
+          <div class="text-6xl mb-4">👥</div>
+          <h3 class="text-2xl font-bold text-slate-800">No Member Selected</h3>
+          <p class="text-slate-500 mt-2">
+            Please select a person from the left list to visualize their family branches.
+          </p>
+        </div>
+      </div>
+
+      <div id="detailsWrapper" class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 lg:static lg:bg-transparent lg:p-0 lg:opacity-100 lg:pointer-events-auto lg:col-span-3 lg:block lg:backdrop-blur-none">
+        
+        <div class="bg-slate-900 rounded-[2rem] lg:rounded-3xl shadow-2xl lg:shadow-xl p-6 text-white w-full max-w-lg max-h-[90vh] lg:max-h-none lg:h-[85vh] overflow-y-auto custom-scroll relative">
+          
+          <button onclick="toggleDetails()" class="lg:hidden absolute top-4 right-4 text-3xl text-slate-400 hover:text-white leading-none">&times;</button>
+
+          <div id="detailsPanel" class="hidden space-y-6 mt-2 lg:mt-0">
+            <h2 class="text-2xl font-bold border-b border-slate-700 pb-4 pr-8">
+              Member Profile
+            </h2>
+
+            <div>
+              <label class="block text-sm font-semibold text-slate-400 mb-2">Full Name</label>
+              <input id="editName" type="text" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-lg focus:ring-2 focus:ring-indigo-500 outline-none" />
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-semibold text-slate-400 mb-2">Gender</label>
+                <select id="editGender" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none">
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-slate-400 mb-2">Birth Date</label>
+                <input id="editBirthDate" type="date" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none" />
+              </div>
+            </div>
+
+            <div class="pt-6 border-t border-slate-700">
+              <button onclick="autoSave()" class="w-full bg-green-600 hover:bg-green-700 py-4 rounded-2xl font-bold text-xl transition-all shadow-lg">
+                Update Details
+              </button>
+            </div>
+
+            <div class="space-y-4 pt-4">
+              <p class="text-sm font-bold text-slate-500 uppercase">Quick Add / Remove Relationships</p>
+              
+              <button onclick="toggleParentForm()" class="w-full bg-slate-800 hover:bg-slate-700 p-4 rounded-xl text-left flex justify-between items-center">
+                <span>+ Add Parent</span>
+                <span class="text-indigo-400">→</span>
+              </button>
+              <div id="parentForm" class="hidden bg-slate-800 p-4 rounded-xl space-y-3">
+                <input id="newParentName" placeholder="Parent Name" class="w-full bg-slate-700 p-2 rounded" />
+                <input id="newParentId" placeholder="Parent ID" type="number" class="w-full bg-slate-700 p-2 rounded" />
+                <button onclick="addParent()" class="w-full bg-indigo-600 p-2 rounded font-bold">Confirm</button>
+              </div>
+
+              <button onclick="toggleChildForm()" class="w-full bg-slate-800 hover:bg-slate-700 p-4 rounded-xl text-left flex justify-between items-center">
+                <span>+ Add Child</span>
+                <span class="text-indigo-400">→</span>
+              </button>
+              <div id="childForm" class="hidden bg-slate-800 p-4 rounded-xl space-y-3">
+                <input id="newChildName" placeholder="Child Name" class="w-full bg-slate-700 p-2 rounded" />
+                <input id="newChildId" placeholder="Child ID" type="number" class="w-full bg-slate-700 p-2 rounded" />
+                <button onclick="addChild()" class="w-full bg-indigo-600 p-2 rounded font-bold">Confirm</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="noDetailsMsg" class="h-full flex items-center justify-center text-slate-500 text-center pb-10">
+            <p>Select a member to edit their information</p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div id="addModal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center z-[70] p-4">
+        <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-xl overflow-hidden p-8">
+        <h2 class="text-3xl font-bold mb-6">Register New Member</h2>
+        <form id="addMemberForm" class="space-y-6">
+          <div>
+            <label class="block text-lg font-medium text-slate-700 mb-2">What is their full name?</label>
+            <input type="text" id="name" required class="w-full px-6 py-4 rounded-2xl border-2 border-slate-200 focus:border-indigo-500 outline-none text-xl" placeholder="e.g. Bat-Erdene" />
+          </div>
+          <div class="grid grid-cols-2 gap-6">
+            <div>
+              <label class="block text-lg font-medium text-slate-700 mb-2">Gender</label>
+              <select id="gender" required class="w-full px-6 py-4 rounded-2xl border-2 border-slate-200 focus:border-indigo-500 outline-none text-xl">
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-lg font-medium text-slate-700 mb-2">Birth Date</label>
+              <input type="date" id="birthDate" class="w-full px-6 py-4 rounded-2xl border-2 border-slate-200 outline-none text-xl" />
+            </div>
+          </div>
+        </form>
+        <div class="flex gap-4 mt-10">
+          <button onclick="hideAddForm()" class="flex-1 py-4 text-slate-500 font-bold text-xl hover:bg-slate-50 rounded-2xl">Cancel</button>
+          <button onclick="addNewMember()" class="flex-1 bg-indigo-600 text-white font-bold text-xl py-4 rounded-2xl shadow-lg hover:bg-indigo-700">Add to Tree</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let allMembers = {};
+      let currentMemberKey = null;
+
+      async function loadMembers() {
+        try {
+          const res = await fetch("/get_all_members");
+          allMembers = await res.json();
+          renderSidebar();
+          if (currentMemberKey) refreshVisualizer();
+        } catch (e) {
+          console.error("Error loading members", e);
+        }
+      }
+
+      function toggleSidebar() {
+        const sidebar = document.getElementById("sidebar");
+        const backdrop = document.getElementById("sidebarBackdrop");
+        
+        if (sidebar.classList.contains("-translate-x-full")) {
+            sidebar.classList.remove("-translate-x-full");
+            backdrop.classList.remove("hidden");
+        } else {
+            sidebar.classList.add("-translate-x-full");
+            backdrop.classList.add("hidden");
+        }
+      }
+
+      function toggleDetails() {
+        const wrapper = document.getElementById("detailsWrapper");
+        
+        if (wrapper.classList.contains("opacity-0")) {
+            wrapper.classList.remove("opacity-0", "pointer-events-none");
+            wrapper.classList.add("opacity-100", "pointer-events-auto");
+        } else {
+            wrapper.classList.add("opacity-0", "pointer-events-none");
+            wrapper.classList.remove("opacity-100", "pointer-events-auto");
+        }
+      }
+
+      function renderSidebar() {
+        const container = document.getElementById("membersList");
+        container.innerHTML = "";
+        const allMembers_ordered = Object.entries(allMembers).sort((a, b) => a[1].name.localeCompare(b[1].name));
+        
+        Object.entries(allMembers).forEach(([key, member]) => {
+          const emoji = member.gender === "Female" ? "👩" : "👨";
+          const div = document.createElement("div");
+          div.className = `p-4 rounded-2xl border cursor-pointer transition-all flex items-center gap-4 ${currentMemberKey === key ? "bg-indigo-50 border-indigo-200 ring-2 ring-indigo-500" : "bg-white border-slate-100 hover:border-indigo-200"}`;
+          div.innerHTML = `
+                    <div class="text-3xl">${emoji}</div>
+                    <div class="flex-1 overflow-hidden">
+                        <div class="font-bold text-lg truncate">${member.name}</div>
+                        <div class="text-slate-400 text-xs font-mono">ID: ${member.uniqueId}</div>
+                    </div>
+                `;
+          div.onclick = () => selectMember(key);
+          container.appendChild(div);
+        });
+      }
+
+      function selectMember(key) {
+        currentMemberKey = key;
+        const member = allMembers[key];
+
+        document.getElementById("noSelectionMsg").classList.add("hidden");
+        document.getElementById("noDetailsMsg").classList.add("hidden");
+        document.getElementById("detailsPanel").classList.remove("hidden");
+        
+        // Show Mobile "Edit Info" Button
+        document.getElementById("mobileEditBtn").classList.remove("hidden");
+        document.getElementById("mobileEditBtn").classList.add("inline-block");
+
+        document.getElementById("editName").value = member.name;
+        document.getElementById("editGender").value = member.gender;
+        document.getElementById("editBirthDate").value = member.birthDate || "";
+
+        renderSidebar();
+        refreshVisualizer();
+
+        // Auto-close sidebar on mobile after selecting a member
+        if (window.innerWidth < 1024) {
+          const sidebar = document.getElementById("sidebar");
+          if (!sidebar.classList.contains("-translate-x-full")) {
+              toggleSidebar();
+          }
+        }
+      }
+
+      function refreshVisualizer() {
+        if (!currentMemberKey) return;
+        const target = allMembers[currentMemberKey];
+
+        // 1. Parents Row
+        const parentsRow = document.getElementById("rowParents");
+        parentsRow.innerHTML = "";
+        (target.parents || []).forEach((pStr) => {
+          const [name, id] = pStr.split(" ^ ");
+          const tabbedName = name[0].toUpperCase() + name.slice(1);
+          parentsRow.appendChild(
+            createMemberCard(tabbedName, id, false, "", true, null),
+          ); // showRemove = true
+        });
+
+        // 2. Current Generation (Target + Partners/Siblings) - NO remove button
+        const currentGenRow = document.getElementById("rowCurrent");
+        currentGenRow.innerHTML = "";
+
+        // Add Target
+        currentGenRow.appendChild(
+          createMemberCard(target.name, target.uniqueId, true),
+        );
+
+        // Add siblings (from parents' children)
+        const parents = target.parents;
+        const added_children = [target.name];
+        parents.forEach((p) => {
+          const children = allMembers[p].children || [];
+          // console.log(allMembers[p], p)
+          children.forEach((c) => {
+            const semi_target = allMembers[c];
+            const name = semi_target.name;
+
+            const id = semi_target.uniqueId;
+            // console.log(name, id, !added_children.includes(name))
+            if (!added_children.includes(name)) {
+              currentGenRow.appendChild(
+                createMemberCard(name, id, false, "border-pink-200 bg-pink-50"),
+              );
+              added_children.push(name);
+            }
+          });
+        });
+
+        // 3. Children Row - with Remove button
+        const childrenRow = document.getElementById("rowChildren");
+        childrenRow.innerHTML = "";
+        Array.from(target.children || []).forEach((cStr) => {
+          const [name, id] = cStr.split(" ^ ");
+          const tabbedName = name[0].toUpperCase() + name.slice(1);
+          childrenRow.appendChild(
+            createMemberCard(tabbedName, id, false, "", true, null),
+          ); // showRemove = true
+        });
+      }
+
+      function createMemberCard(
+        name,
+        id,
+        isActive = false,
+        extraClasses = "",
+        showRemove = false,
+        onRemove = null,
+      ) {
+        const card = document.createElement("div");
+        card.className = `tree-card min-w-[150px] p-4 rounded-2xl shadow-sm text-center bg-white border cursor-pointer relative ${isActive ? "active shadow-lg" : "border-slate-200"} ${extraClasses}`;
+
+        card.innerHTML = `
+        <div class="text-2xl mb-1">${findGenderEmoji(name, id)}</div>
+        <div class="font-bold text-sm leading-tight">${name}</div>
+        <div class="text-[10px] text-slate-400 mt-1">ID: ${id}</div>
+        
+        ${
+          showRemove
+            ? `
+        <button onclick="event.stopImmediatePropagation(); removeRelationship('${name}', '${id}', this)" 
+                class="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white text-xs font-bold w-6 h-6 rounded-full shadow-md flex items-center justify-center">
+            ×
+        </button>`
+            : ""
+        }
+    `;
+
+        card.onclick = () => {
+          const key = `${String(name).toLowerCase()} ^ ${id}`;
+          if (allMembers[key]) selectMember(key);
+          else alert("Member details not found in database.");
+        };
+
+        return card;
+      }
+
+      function findGenderEmoji(name, id) {
+        const key = `${String(name).toLowerCase()} ^ ${id}`;
+        const m = allMembers[key];
+        if (!m) return "👤";
+        return m.gender === "Female" ? "👩" : "👨";
+      }
+
+      // ==================== REMOVE RELATIONSHIP ====================
+      async function removeRelationship(type, name, id) {
+        if (!currentMemberKey) return;
+        const confirmMsg =
+          type === "parent"
+            ? `Remove ${name} as parent?`
+            : `Remove ${name} as child?`;
+
+        if (!confirm(confirmMsg)) return;
+
+        const member = allMembers[currentMemberKey];
+        const relKey = `${String(name).toLowerCase()} ^ ${id}`;
+
+        if (type === "parent") {
+          // Remove from member's parents
+          member.parents = (member.parents || []).filter((p) => p !== relKey);
+
+          // Remove member from parent's children list
+          if (allMembers[relKey]) {
+            const parent = allMembers[relKey];
+            parent.children = (parent.children || []).filter(
+              (c) =>
+                c !==
+                `${String(member.name).toLowerCase()} ^ ${member.uniqueId}`,
+            );
+            await fetch("/update_member", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ key: relKey, member: parent }),
+            });
+          }
+        } else if (type === "child") {
+          // Remove from member's children
+          member.children = (member.children || []).filter((c) => c !== relKey);
+
+          // Remove member from child's parents list
+          if (allMembers[relKey]) {
+            const child = allMembers[relKey];
+            child.parents = (child.parents || []).filter(
+              (p) =>
+                p !==
+                `${String(member.name).toLowerCase()} ^ ${member.uniqueId}`,
+            );
+            await fetch("/update_member", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ key: relKey, member: child }),
+            });
+          }
+        }
+
+        // Update current member
+        await fetch("/update_member", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ key: currentMemberKey, member }),
+        });
+
+        loadMembers(); // Refresh everything
+      }
+
+      // ==================== Existing Functions (cleaned up) ====================
+      async function autoSave() {
+        if (!currentMemberKey) return;
+        const member = allMembers[currentMemberKey];
+        const prev_name = member.name;
+        const prev_key = currentMemberKey
+        member.name = document.getElementById("editName").value;
+        member.gender = document.getElementById("editGender").value;
+        member.birthDate = document.getElementById("editBirthDate").value;
+
+        const parents = member.parents || [];
+        
+        parents.forEach(async (p) => {
+          const parent = allMembers[p];
+          parent.children = parent.children.filter(c => c !== prev_key);
+          parent.children.push(`${String(member.name).toLowerCase()} ^ ${member.uniqueId}`);
+          await fetch("/update_member", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ key: currentMemberKey, member: parent }),
+        });
+        })
+
+        const children = member.children || [];
+        children.forEach(async(c) => {
+          const child = allMembers[c];
+          child.parents = child.parents.filter(p => p !== prev_key);
+          child.parents.push(`${String(member.name).toLowerCase()} ^ ${member.uniqueId}`);
+          await fetch("/update_member", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ key: currentMemberKey, member: child }),
+        });
+        })
+        console.log(member)
+        await fetch("/update_member", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ key: currentMemberKey, member }),
+        });
+
+
+        loadMembers();
+        selectMember(String(member.name).toLowerCase() + " ^ " + member.uniqueId);
+      }
+
+      async function addNewMember() {
+        const name = document.getElementById("name").value.trim();
+        const gender = document.getElementById("gender").value;
+        const birthDate = document.getElementById("birthDate").value;
+
+        const res = await fetch("/add_member", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, gender, birthDate }),
+        });
+        if (res.ok) {
+          hideAddForm();
+          loadMembers();
+        }
+      }
+
+      async function addParent() {
+        const name = document.getElementById("newParentName").value.trim();
+        const id = document.getElementById("newParentId").value;
+        if (!name || !id) return alert("Name and ID are required");
+
+        const parentKey = `${String(name).toLowerCase()} ^ ${id}`;
+        if (!allMembers[parentKey]) return alert("Parent not found in database.");
+        const member = allMembers[currentMemberKey];
+
+        if (!member.parents) member.parents = [];
+        if (!member.parents.includes(parentKey)) member.parents.push(parentKey);
+
+        await fetch("/update_member", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ key: currentMemberKey, member }),
+        });
+
+        if (allMembers[parentKey]) {
+          const parent = allMembers[parentKey];
+          if (!parent.children) parent.children = [];
+          const childEntry = `${String(member.name).toLowerCase()} ^ ${member.uniqueId}`;
+          if (!parent.children.includes(childEntry))
+            parent.children.push(childEntry);
+
+          await fetch("/update_member", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ key: parentKey, member: parent }),
+          });
+        }
+
+        loadMembers();
+        document.getElementById("parentForm").classList.add("hidden");
+      }
+
+      async function addChild() {
+        const name = document.getElementById("newChildName").value.trim();
+        const id = document.getElementById("newChildId").value;
+        if (!name || !id) return alert("Name and ID are required");
+
+        const childKey = `${String(name).toLowerCase()} ^ ${id}`;
+        if (!allMembers[childKey]) return alert("Child not found in database.");
+        const member = allMembers[currentMemberKey];
+
+        if (!member.children) member.children = [];
+        if (!member.children.includes(childKey)) member.children.push(childKey);
+
+        await fetch("/update_member", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ key: currentMemberKey, member }),
+        });
+
+        if (allMembers[childKey]) {
+          const child = allMembers[childKey];
+          if (!child.parents) child.parents = [];
+          const parentEntry = `${String(member.name).toLowerCase()} ^ ${member.uniqueId}`;
+          if (!child.parents.includes(parentEntry))
+            child.parents.push(parentEntry);
+
+          await fetch("/update_member", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ key: childKey, member: child }),
+          });
+        }
+
+        loadMembers();
+        document.getElementById("childForm").classList.add("hidden");
+      }
+
+      // Remove Parent or Child Relationship (Bidirectional)
+      async function removeRelationship(name, id, buttonElement) {
+        if (!confirm(`Remove ${name} from this relationship?`)) return;
+
+        const target = allMembers[currentMemberKey];
+        const relKey = `${String(name).toLowerCase()} ^ ${id}`;
+
+        // Determine if it's a parent or child
+        const isParent = (target.parents || []).some((p) => p === relKey);
+        const isChild = (target.children || []).some((c) => c === relKey);
+
+        if (!isParent && !isChild) return;
+
+        if (isParent) {
+          // Remove from target's parents
+          target.parents = target.parents.filter((p) => p !== relKey);
+
+          // Remove from parent's children list
+          if (allMembers[relKey]) {
+            const parent = allMembers[relKey];
+            parent.children = (parent.children || []).filter(
+              (c) =>
+                c !==
+                `${String(target.name).toLowerCase()} ^ ${target.uniqueId}`,
+            );
+            await fetch("/update_member", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ key: relKey, member: parent }),
+            });
+          }
+        } else if (isChild) {
+          // Remove from target's children
+          target.children = target.children.filter((c) => c !== relKey);
+
+          // Remove from child's parents list
+          if (allMembers[relKey]) {
+            const child = allMembers[relKey];
+            child.parents = (child.parents || []).filter(
+              (p) =>
+                p !==
+                `${String(target.name).toLowerCase()} ^ ${target.uniqueId}`,
+            );
+            await fetch("/update_member", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ key: relKey, member: child }),
+            });
+          }
+        }
+
+        // Update current member
+        await fetch("/update_member", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ key: currentMemberKey, member: target }),
+        });
+
+        loadMembers(); // Refresh everything
+      }
+
+      function showAddForm() {
+        document.getElementById("addModal").classList.remove("hidden");
+      }
+      function hideAddForm() {
+        document.getElementById("addModal").classList.add("hidden");
+      }
+      function toggleParentForm() {
+        document.getElementById("parentForm").classList.toggle("hidden");
+      }
+      function toggleChildForm() {
+        document.getElementById("childForm").classList.toggle("hidden");
+      }
+
+      window.onload = loadMembers;
+    </script>
+  </body>
+</html>

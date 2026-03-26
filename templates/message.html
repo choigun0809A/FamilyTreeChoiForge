@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Message</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .message-card {
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-6">
+    <div class="max-w-lg w-full">
+        <div class="bg-white rounded-3xl message-card p-10 text-center">
+            
+            <!-- Optional Icon -->
+            <div class="mx-auto mb-6 w-16 h-16 bg-indigo-100 rounded-2xl flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-9 h-9 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+            </div>
+
+            <!-- Message Content -->
+            <h1 class="text-2xl font-semibold text-gray-800 mb-4">
+                {{ message }}
+            </h1>
+
+            <!-- Optional Subtext -->
+            <p class="text-gray-500 mb-8">
+                You will be redirected shortly, or click the button below.
+            </p>
+
+            <!-- Button -->
+            <a href="/"
+               class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-8 py-3.5 rounded-2xl transition-all duration-200">
+                Go to Homepage
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Optional: Auto redirect after 5 seconds
+        setTimeout(() => {
+            window.location.href = '/';
+        }, 5000);
+    </script>
+</body>
+</html>
