@@ -1,25 +1,32 @@
 from firebase_admin import credentials, initialize_app, db, firestore, auth, GoogleAuthCredentials
 import os, json
 
-try:
-    envVarDir = os.getenv('FamilyTreeCred')
-    envVar = None
-    with open(envVarDir, 'r') as f:
-        envVar = json.load(f)
+requestRef: firestore.CollectionReference = None
+members_ref: firestore.CollectionReference = None
+cred = None
+db = None
 
-    # print(envVar)
 
-    cred = credentials.Certificate(envVar)
-    initialize_app(cred)
+def load_firebase():
+    global requestRef, members_ref, db, cred
+    try:
+        envVarDir = os.getenv('FamilyTreeCred')
+        envVar = None
+        with open(envVarDir, 'r') as f:
+            envVar = json.load(f)
 
-    db = firestore.client()
+        # print(envVar)
 
-    requestRef = db.collection('requests')
-    members_ref = db.collection('members')
-except Exception as e:
-    print(e)
-    requestRef = None
-    members_ref = None
+        cred = credentials.Certificate(envVar)
+        initialize_app(cred)
+
+        db = firestore.client()
+
+        requestRef = db.collection('requests')
+        members_ref = db.collection('members')
+    except Exception as e:
+        print(e)
+    
     
 
 def GmailListed(email):
@@ -55,6 +62,8 @@ def UidInRequests(uid):
         return False
 
 def signup(email, password):
+    if requestRef == None:
+        load_firebase()
     try:
         user = auth.create_user(
             email=email,
@@ -80,6 +89,8 @@ def signup(email, password):
         return None, False
 
 def login(email, password):
+    if requestRef == None:
+        load_firebase()
     try:
         user = auth.get_user_by_email(email)
         if Verified(email):

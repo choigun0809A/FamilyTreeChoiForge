@@ -99,6 +99,8 @@ def add_member():
 
 @app.route('/adminCheck', methods=['POST']  )
 def admin_check():
+    if firebase.requestRef == None:
+        firebase.load_firebase()
     if request.method == 'POST':
         json_data = request.get_json()
         password = json_data.get('password')
