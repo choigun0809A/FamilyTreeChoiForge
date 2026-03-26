@@ -142,7 +142,7 @@ def main():
 
 @app.route('/delete_member', methods=['POST'])
 def delete_member():
-    firebase.delete_member(request.get_json()['uid'])
+    firebase.delete_member(request.get_json()['key'])
     return jsonify({'ok': True, 'message': 'Member deleted successfully!'}), 200
 
 if __name__ == "__main__":
