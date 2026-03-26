@@ -18,7 +18,7 @@ try:
     members_ref = db.collection('members')
 except Exception as e:
     print(e)
-    
+
 def GmailListed(email):
     try:
         auth.get_user_by_email(email)
@@ -86,7 +86,7 @@ def login(email, password):
         return user.uid, False
     except Exception as e:
         print(e)
-        return None
+        return None, None
 
 def add_member(name, uniqueId = 0, gender = '', birthDate = ''):
     members_ref.document(f"{name.lower()} ^ {uniqueId}").set({

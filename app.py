@@ -49,6 +49,8 @@ def login():
             return jsonify({'success': False, 'message': 'Please wait for verification.'}), 401
         elif not firebase.UidInRequests(uid):
             return jsonify({'success': False, 'message': 'Please signup first.'}), 401
+        elif uid == None:
+            return jsonify({'success': False, 'message': 'Server error!'}), 401
 
     return render_template('login.html')
 
@@ -136,4 +138,4 @@ def main():
     return render_template('main_update.html')
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host='0.0.0.0', port=5001, debug=True)
