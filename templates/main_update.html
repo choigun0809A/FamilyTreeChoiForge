@@ -374,19 +374,19 @@
 
           <aside
             id="detailsWrapper"
-            class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm opacity-0 pointer-events-none transition-all lg:static lg:bg-transparent lg:p-0 lg:opacity-100 lg:pointer-events-auto lg:col-span-3 lg:block"
+            class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-all lg:static lg:bg-transparent lg:p-0 lg:opacity-100 lg:pointer-events-auto lg:col-span-3 lg:block opacity-0 pointer-events-none"
           >
             <div
-              class="bg-slate-900 rounded-[2.5rem] p-8 text-white w-full max-w-md lg:h-[82vh] overflow-y-auto custom-scroll shadow-2xl relative border border-white/10"
+              class="bg-slate-900 rounded-[2.5rem] p-8 text-white w-full max-w-md lg:h-[50vh] overflow-y-auto custom-scroll shadow-2xl relative border border-white/10"
             >
               <button
                 onclick="toggleDetails()"
                 class="lg:hidden absolute top-6 right-6 text-2xl text-slate-500"
               >
-                &times;
+                ×
               </button>
 
-              <div id="detailsPanel" class="hidden space-y-8">
+              <div id="detailsPanel" class="space-y-8">
                 <header>
                   <h2
                     class="text-xs font-black uppercase tracking-[0.3em] text-indigo-400 mb-2"
@@ -440,12 +440,12 @@
 
                 <button
                   onclick="autoSave()"
-                  class="w-full bg-indigo-600 hover:bg-indigo-500 py-4 rounded-2xl font-bold text-lg transition-all shadow-lg shadow-indigo-900/20"
+                  class="w-full bg-indigo-600 hover:bg-indigo-500 py-1 rounded-2xl font-bold text-lg transition-all shadow-lg shadow-indigo-900/20"
                 >
                   Save Changes
                 </button>
 
-                <div class="space-y-3 pt-6 border-t border-white/5">
+                <div class="space-y-1.5 pt-6 border-t border-white/5">
                   <p
                     class="text-[10px] font-black uppercase tracking-widest text-slate-500"
                   >
@@ -464,7 +464,7 @@
                   </button>
                   <div
                     id="parentForm"
-                    class="hidden bg-slate-800/60 p-4 rounded-2xl space-y-3 border border-indigo-500/20"
+                    class="bg-slate-800/60 p-4 rounded-2xl space-y-3 border border-indigo-500/20 hidden"
                   >
                     <input
                       id="newParentName"
@@ -519,7 +519,7 @@
                   </div>
                 </div>
 
-                <div class="pt-6 mt-6 border-t border-white/5">
+                <div class="pt-3 mt-3 border-t border-white/5">
                   <button
                     id="deleteMemberBtn"
                     class="w-full group flex items-center justify-center gap-2 py-3 rounded-2xl border border-red-500/30 text-red-500 hover:bg-red-500 hover:text-white transition-all duration-300 font-bold text-sm"
@@ -531,7 +531,7 @@
 
                 <div
                   id="deleteMemberModal"
-                  class="hidden fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm"
+                  class="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm hidden"
                 >
                   <div
                     class="bg-slate-900 border border-white/10 rounded-[2.5rem] p-8 max-w-sm w-full shadow-2xl transform transition-all"
@@ -575,7 +575,7 @@
 
               <div
                 id="noDetailsMsg"
-                class="h-full flex flex-col items-center justify-center text-slate-500 text-center opacity-40"
+                class="h-full flex flex-col items-center justify-center text-slate-500 text-center opacity-40 hidden"
               >
                 <p class="text-4xl mb-4">📝</p>
                 <p class="text-sm font-medium">Select a profile to edit</p>
@@ -735,7 +735,7 @@
               confirmBtn.innerText = originalText;
               confirmBtn.disabled = false;
             }
-            
+
             toggleDetails();
           }
 
@@ -1109,6 +1109,9 @@
             loadMembers();
             document.getElementById("parentForm").classList.add("hidden");
             toggleDetails();
+
+            document.getElementById("newParentName").value = "";
+            document.getElementById("newParentId") = "";
           }
 
           async function addChild() {
@@ -1148,6 +1151,9 @@
             loadMembers();
             document.getElementById("childForm").classList.add("hidden");
             toggleDetails();
+
+            document.getElementById("newChildName").value = "";
+            document.getElementById("newChildId") = "";
           }
 
           // Remove Parent or Child Relationship (Bidirectional)
@@ -1217,7 +1223,7 @@
           function hideAddForm() {
             document.getElementById("addModal").classList.add("hidden");
           }
-          
+
           function toggleParentForm() {
             document.getElementById("parentForm").classList.toggle("hidden");
           }
