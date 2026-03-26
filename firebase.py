@@ -20,7 +20,7 @@ if False:
 else:
     envVar = os.environ.get('FamilyTreeCred')
 
-    cred = credentials.Certificate(json.load(envVar))
+    cred = credentials.Certificate(json.loads(envVar))
     initialize_app(cred)
 
     db = firestore.client()
