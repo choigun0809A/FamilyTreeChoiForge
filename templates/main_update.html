@@ -1066,6 +1066,7 @@
             if (res.ok) {
               hideAddForm();
               loadMembers();
+              toggleSidebar();
             }
           }
 
@@ -1105,6 +1106,7 @@
 
             loadMembers();
             document.getElementById("parentForm").classList.add("hidden");
+            toggleDetails();
           }
 
           async function addChild() {
@@ -1143,6 +1145,7 @@
 
             loadMembers();
             document.getElementById("childForm").classList.add("hidden");
+            toggleDetails();
           }
 
           // Remove Parent or Child Relationship (Bidirectional)
@@ -1212,6 +1215,7 @@
           function hideAddForm() {
             document.getElementById("addModal").classList.add("hidden");
           }
+          
           function toggleParentForm() {
             document.getElementById("parentForm").classList.toggle("hidden");
           }
