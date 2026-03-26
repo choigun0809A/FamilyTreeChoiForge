@@ -27,6 +27,8 @@ def load_firebase():
     
 
 def GmailListed(email):
+    if requestRef == None:
+        load_firebase()
     try:
         auth.get_user_by_email(email)
         return True
