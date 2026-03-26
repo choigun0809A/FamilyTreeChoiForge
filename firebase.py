@@ -143,6 +143,10 @@ def get_all_members():
         members[member.id] = member.to_dict()
     return members
 
+
+def delete_member(uid):
+    members_ref.document(uid).delete()
+
 def get_all_requests():
     
     requests = {}

@@ -140,5 +140,10 @@ def main():
     
     return render_template('main_update.html')
 
+@app.route('/delete_member', methods=['POST'])
+def delete_member():
+    firebase.delete_member(request.get_json()['uid'])
+    return jsonify({'ok': True, 'message': 'Member deleted successfully!'}), 200
+
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5001, debug=True)
+    app.run()

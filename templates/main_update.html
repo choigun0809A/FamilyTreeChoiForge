@@ -81,338 +81,831 @@
     </style>
   </head>
   <body class="p-4 lg:p-8 relative">
-    <div id="sidebarBackdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-40 hidden lg:hidden"></div>
+    <!doctype html>
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Family Heritage | Nexus</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap"
+          rel="stylesheet"
+        />
+        <style>
+          body {
+            font-family: "Plus Jakarta Sans", sans-serif;
+            background-color: #f1f5f9;
+            color: #0f172a;
+          }
 
-    <header class="max-w-[1600px] mx-auto flex justify-between items-center mb-6">
-      <div class="flex items-center gap-4">
-        <button onclick="toggleSidebar()" class="lg:hidden bg-white p-3 rounded-2xl shadow-sm border border-slate-200 hover:bg-slate-50">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-        </button>
-        <div>
-            <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Family Heritage</h1>
-            <p class="text-sm text-slate-500 font-medium hidden sm:block">Nexus Biological Database</p>
-        </div>
-      </div>
-      <button
-        onclick="showAddForm()"
-        class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-3 rounded-2xl shadow-lg shadow-indigo-200 transition-all active:scale-95 flex items-center gap-2"
-      >
-        <span class="text-xl">+</span> Add Member
-      </button>
-    </header>
+          /* Better Scrollbar Styling */
+          .custom-scroll::-webkit-scrollbar {
+            height: 5px;
+            width: 5px;
+          }
+          .custom-scroll::-webkit-scrollbar-track {
+            background: transparent;
+          }
+          .custom-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 20px;
+          }
+          .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+          }
 
-    <main class="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
-      
-      <aside id="sidebar" class="fixed top-0 left-0 h-full w-80 bg-white shadow-2xl z-50 transform -translate-x-full transition-transform duration-300 lg:static lg:transform-none lg:col-span-3 lg:rounded-[2rem] lg:shadow-sm border border-slate-200 overflow-hidden flex flex-col lg:h-[82vh]">
-        <div class="p-6 border-b border-slate-100 flex justify-between items-center">
-          <h2 class="text-lg font-bold text-slate-800 uppercase tracking-wider">Directory</h2>
-          <button onclick="toggleSidebar()" class="lg:hidden text-slate-400">&times;</button>
-        </div>
-        <div id="membersList" class="flex-1 overflow-y-auto p-4 space-y-2 custom-scroll bg-slate-50/50">
+          /* Container Polish */
+          .row-container {
+            display: flex;
+            gap: 2rem;
+            padding: 1.5rem; /* Increased padding to prevent card clipping when scaling */
+            justify-content: start; /* Better for scrolling lists */
+            align-items: center;
+            min-height: 200px;
+            scroll-behavior: smooth;
+          }
+
+          /* If few items, center them; if many, allow scroll from start */
+          .row-container:not(:has(> :nth-child(3))) {
+            justify-content: center;
+          }
+
+          /* Modern Card Styling */
+          .tree-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            background: white;
+            min-width: 160px;
+            flex-shrink: 0;
+          }
+
+          .tree-card.active {
+            border-color: #6366f1;
+            background-color: #ffffff;
+            transform: scale(1.1) translateY(-5px);
+            box-shadow:
+              0 20px 25px -5px rgba(99, 102, 241, 0.1),
+              0 8px 10px -6px rgba(99, 102, 241, 0.1);
+            z-index: 20;
+          }
+
+          .tree-card:hover:not(.active) {
+            transform: translateY(-2px);
+            border-color: #cbd5e1;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+          }
+
+          /* Generation Connectors */
+          .generation-gap {
+            position: relative;
+            height: 30px;
+            width: 2px;
+            background: linear-gradient(to bottom, #cbd5e1, #e2e8f0);
+            margin: 0 auto;
+          }
+
+          .generation-gap::before,
+          .generation-gap::after {
+            content: "";
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #cbd5e1;
+            left: 50%;
+            transform: translateX(-50%);
+          }
+          .generation-gap::before {
+            top: -6px;
+          }
+          .generation-gap::after {
+            bottom: -6px;
+          }
+
+          /* Sidebar highlight */
+          .member-item-active {
+            background: linear-gradient(90deg, #f8fafc 0%, #eef2ff 100%);
+            border-left: 4px solid #6366f1 !important;
+          }
+
+          @keyframes shake {
+            0%,
+            100% {
+              transform: rotate(0deg);
+            }
+            25% {
+              transform: rotate(-10deg);
+            }
+            75% {
+              transform: rotate(10deg);
+            }
+          }
+
+          .group:hover .group-hover\:shake {
+            animation: shake 0.3s ease-in-out infinite;
+          }
+
+          #deleteMemberModal {
+            animation: fadeIn 0.2s ease-out;
+          }
+
+          @keyframes fadeIn {
+            from {
+              opacity: 0;
+              transform: scale(0.95);
+            }
+            to {
+              opacity: 1;
+              transform: scale(1);
+            }
+          }
+        </style>
+      </head>
+      <body class="p-4 lg:p-6">
+        <div
+          id="sidebarBackdrop"
+          onclick="toggleSidebar()"
+          class="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-40 hidden lg:hidden"
+        ></div>
+
+        <header
+          class="max-w-[1600px] mx-auto flex justify-between items-center mb-6"
+        >
+          <div class="flex items-center gap-4">
+            <button
+              onclick="toggleSidebar()"
+              class="lg:hidden bg-white p-3 rounded-2xl shadow-sm border border-slate-200 hover:bg-slate-50"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+              </svg>
+            </button>
+            <div>
+              <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">
+                Family Heritage
+              </h1>
+              <p class="text-sm text-slate-500 font-medium hidden sm:block">
+                Nexus Biological Database
+              </p>
+            </div>
           </div>
-      </aside>
-
-      <section class="lg:col-span-6 bg-white rounded-[2rem] shadow-sm border border-slate-200 flex flex-col h-[82vh] relative overflow-hidden">
-        <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-white/50 backdrop-blur-sm sticky top-0 z-30">
-          <h2 class="text-lg font-bold text-slate-800 uppercase tracking-wider">Visualization</h2>
-          <button id="mobileEditBtn" onclick="toggleDetails()" class="lg:hidden bg-slate-900 text-white px-4 py-2 rounded-xl text-xs font-bold">
-            Edit Data
+          <button
+            onclick="showAddForm()"
+            class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-3 rounded-2xl shadow-lg shadow-indigo-200 transition-all active:scale-95 flex items-center gap-2"
+          >
+            <span class="text-xl">+</span> Add Member
           </button>
-        </div>
+        </header>
 
-        <div id="treeVisualizer" class="flex-1 overflow-y-auto p-2 custom-scroll bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] [background-size:20px_20px]">
-          <div class="py-8">
-            <div class="text-center mb-2">
-                <span class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Ascendants (Parents)</span>
+        <main
+          class="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6"
+        >
+          <aside
+            id="sidebar"
+            class="fixed top-0 left-0 h-full w-80 bg-white shadow-2xl z-50 transform -translate-x-full transition-transform duration-300 lg:static lg:transform-none lg:col-span-3 lg:rounded-[2rem] lg:shadow-sm border border-slate-200 overflow-hidden flex flex-col lg:h-[82vh]"
+          >
+            <div
+              class="p-6 border-b border-slate-100 flex justify-between items-center"
+            >
+              <h2
+                class="text-lg font-bold text-slate-800 uppercase tracking-wider"
+              >
+                Directory
+              </h2>
+              <button
+                onclick="toggleSidebar()"
+                class="lg:hidden text-slate-400"
+              >
+                &times;
+              </button>
             </div>
-            <div id="rowParents" class="row-container custom-scroll"></div>
+            <div
+              id="membersList"
+              class="flex-1 overflow-y-auto p-4 space-y-2 custom-scroll bg-slate-50/50"
+            ></div>
+          </aside>
 
-            <div class="generation-gap"></div>
-
-            <div class="text-center mb-2">
-                <span class="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-500">Subject & Siblings</span>
+          <section
+            class="lg:col-span-6 bg-white rounded-[2rem] shadow-sm border border-slate-200 flex flex-col h-[82vh] relative overflow-hidden"
+          >
+            <div
+              class="p-6 border-b border-slate-100 flex justify-between items-center bg-white/50 backdrop-blur-sm sticky top-0 z-30"
+            >
+              <h2
+                class="text-lg font-bold text-slate-800 uppercase tracking-wider"
+              >
+                Visualization
+              </h2>
+              <button
+                id="mobileEditBtn"
+                onclick="toggleDetails()"
+                class="lg:hidden bg-slate-900 text-white px-4 py-2 rounded-xl text-xs font-bold"
+              >
+                Edit Data
+              </button>
             </div>
-            <div id="rowCurrent" class="row-container custom-scroll"></div>
 
-            <div class="generation-gap"></div>
+            <div
+              id="treeVisualizer"
+              class="flex-1 overflow-y-auto p-2 custom-scroll bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] [background-size:20px_20px]"
+            >
+              <div class="py-8">
+                <div class="text-center mb-2">
+                  <span
+                    class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400"
+                    >Ascendants (Parents)</span
+                  >
+                </div>
+                <div id="rowParents" class="row-container custom-scroll"></div>
 
-            <div class="text-center mb-2">
-                <span class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Descendants (Children)</span>
+                <div class="generation-gap"></div>
+
+                <div class="text-center mb-2">
+                  <span
+                    class="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-500"
+                    >Subject & Siblings</span
+                  >
+                </div>
+                <div id="rowCurrent" class="row-container custom-scroll"></div>
+
+                <div class="generation-gap"></div>
+
+                <div class="text-center mb-2">
+                  <span
+                    class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400"
+                    >Descendants (Children)</span
+                  >
+                </div>
+                <div id="rowChildren" class="row-container custom-scroll"></div>
+              </div>
             </div>
-            <div id="rowChildren" class="row-container custom-scroll"></div>
-          </div>
-        </div>
 
-        <div id="noSelectionMsg" class="absolute inset-0 bg-slate-50/95 flex flex-col items-center justify-center text-center p-12 z-40 transition-all">
-          <div class="w-20 h-20 bg-white rounded-3xl shadow-sm flex items-center justify-center text-4xl mb-6 border border-slate-100">🧬</div>
-          <h3 class="text-xl font-bold text-slate-800">Initialize Visualizer</h3>
-          <p class="text-slate-500 mt-2 max-w-xs text-sm leading-relaxed">
-            Select a subject from the directory to build the generational branch.
-          </p>
-        </div>
-      </section>
+            <div
+              id="noSelectionMsg"
+              class="absolute inset-0 bg-slate-50/95 flex flex-col items-center justify-center text-center p-12 z-40 transition-all"
+            >
+              <div
+                class="w-20 h-20 bg-white rounded-3xl shadow-sm flex items-center justify-center text-4xl mb-6 border border-slate-100"
+              >
+                🧬
+              </div>
+              <h3 class="text-xl font-bold text-slate-800">
+                Initialize Visualizer
+              </h3>
+              <p class="text-slate-500 mt-2 max-w-xs text-sm leading-relaxed">
+                Select a subject from the directory to build the generational
+                branch.
+              </p>
+            </div>
+          </section>
 
-      <aside id="detailsWrapper" class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm opacity-0 pointer-events-none transition-all lg:static lg:bg-transparent lg:p-0 lg:opacity-100 lg:pointer-events-auto lg:col-span-3 lg:block">
-        <div class="bg-slate-900 rounded-[2.5rem] p-8 text-white w-full max-w-md lg:h-[82vh] overflow-y-auto custom-scroll shadow-2xl relative border border-white/10">
-          
-          <button onclick="toggleDetails()" class="lg:hidden absolute top-6 right-6 text-2xl text-slate-500">&times;</button>
+          <aside
+            id="detailsWrapper"
+            class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm opacity-0 pointer-events-none transition-all lg:static lg:bg-transparent lg:p-0 lg:opacity-100 lg:pointer-events-auto lg:col-span-3 lg:block"
+          >
+            <div
+              class="bg-slate-900 rounded-[2.5rem] p-8 text-white w-full max-w-md lg:h-[82vh] overflow-y-auto custom-scroll shadow-2xl relative border border-white/10"
+            >
+              <button
+                onclick="toggleDetails()"
+                class="lg:hidden absolute top-6 right-6 text-2xl text-slate-500"
+              >
+                &times;
+              </button>
 
-          <div id="detailsPanel" class="hidden space-y-8">
-            <header>
-                <h2 class="text-xs font-black uppercase tracking-[0.3em] text-indigo-400 mb-2">Data Profile</h2>
-                <h3 class="text-2xl font-bold">Member Information</h3>
-            </header>
+              <div id="detailsPanel" class="hidden space-y-8">
+                <header>
+                  <h2
+                    class="text-xs font-black uppercase tracking-[0.3em] text-indigo-400 mb-2"
+                  >
+                    Data Profile
+                  </h2>
+                  <h3 class="text-2xl font-bold">Member Information</h3>
+                </header>
 
-            <div class="space-y-4">
-              <div>
-                <label class="text-[10px] font-bold uppercase text-slate-500 ml-1">Legal Name</label>
-                <input id="editName" type="text" class="w-full bg-slate-800/50 border border-slate-700 rounded-2xl px-5 py-4 mt-1 focus:ring-2 focus:ring-indigo-500 outline-none transition-all" />
+                <div class="space-y-4">
+                  <div>
+                    <label
+                      class="text-[10px] font-bold uppercase text-slate-500 ml-1"
+                      >Legal Name</label
+                    >
+                    <input
+                      id="editName"
+                      type="text"
+                      class="w-full bg-slate-800/50 border border-slate-700 rounded-2xl px-5 py-4 mt-1 focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+                    />
+                  </div>
+
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <label
+                        class="text-[10px] font-bold uppercase text-slate-500 ml-1"
+                        >Gender</label
+                      >
+                      <select
+                        id="editGender"
+                        class="w-full bg-slate-800/50 border border-slate-700 rounded-2xl px-4 py-4 mt-1 outline-none"
+                      >
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label
+                        class="text-[10px] font-bold uppercase text-slate-500 ml-1"
+                        >Birth Date</label
+                      >
+                      <input
+                        id="editBirthDate"
+                        type="date"
+                        class="w-full bg-slate-800/50 border border-slate-700 rounded-2xl px-4 py-4 mt-1 outline-none text-sm"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  onclick="autoSave()"
+                  class="w-full bg-indigo-600 hover:bg-indigo-500 py-4 rounded-2xl font-bold text-lg transition-all shadow-lg shadow-indigo-900/20"
+                >
+                  Save Changes
+                </button>
+
+                <div class="space-y-3 pt-6 border-t border-white/5">
+                  <p
+                    class="text-[10px] font-black uppercase tracking-widest text-slate-500"
+                  >
+                    Link Relationships
+                  </p>
+
+                  <button
+                    onclick="toggleParentForm()"
+                    class="w-full bg-slate-800/40 hover:bg-slate-800 p-4 rounded-2xl text-left flex justify-between items-center group transition-all"
+                  >
+                    <span class="text-sm font-semibold">Assign Parent</span>
+                    <span
+                      class="text-indigo-400 group-hover:translate-x-1 transition-transform"
+                      >→</span
+                    >
+                  </button>
+                  <div
+                    id="parentForm"
+                    class="hidden bg-slate-800/60 p-4 rounded-2xl space-y-3 border border-indigo-500/20"
+                  >
+                    <input
+                      id="newParentName"
+                      placeholder="Parent Name"
+                      class="w-full bg-slate-900 px-4 py-2 rounded-xl text-sm"
+                    />
+                    <input
+                      id="newParentId"
+                      placeholder="Parent ID"
+                      type="number"
+                      class="w-full bg-slate-900 px-4 py-2 rounded-xl text-sm"
+                    />
+                    <button
+                      onclick="addParent()"
+                      class="w-full bg-indigo-600 py-2 rounded-xl text-sm font-bold"
+                    >
+                      Link Parent
+                    </button>
+                  </div>
+
+                  <button
+                    onclick="toggleChildForm()"
+                    class="w-full bg-slate-800/40 hover:bg-slate-800 p-4 rounded-2xl text-left flex justify-between items-center group transition-all"
+                  >
+                    <span class="text-sm font-semibold">Assign Child</span>
+                    <span
+                      class="text-indigo-400 group-hover:translate-x-1 transition-transform"
+                      >→</span
+                    >
+                  </button>
+                  <div
+                    id="childForm"
+                    class="hidden bg-slate-800/60 p-4 rounded-2xl space-y-3 border border-indigo-500/20"
+                  >
+                    <input
+                      id="newChildName"
+                      placeholder="Child Name"
+                      class="w-full bg-slate-900 px-4 py-2 rounded-xl text-sm"
+                    />
+                    <input
+                      id="newChildId"
+                      placeholder="Child ID"
+                      type="number"
+                      class="w-full bg-slate-900 px-4 py-2 rounded-xl text-sm"
+                    />
+                    <button
+                      onclick="addChild()"
+                      class="w-full bg-indigo-600 py-2 rounded-xl text-sm font-bold"
+                    >
+                      Link Child
+                    </button>
+                  </div>
+                </div>
+
+                <div class="pt-6 mt-6 border-t border-white/5">
+                  <button
+                    id="deleteMemberBtn"
+                    class="w-full group flex items-center justify-center gap-2 py-3 rounded-2xl border border-red-500/30 text-red-500 hover:bg-red-500 hover:text-white transition-all duration-300 font-bold text-sm"
+                  >
+                    <i class="fas fa-trash-alt text-xs group-hover:shake"></i>
+                    Delete Identity Record
+                  </button>
+                </div>
+
+                <div
+                  id="deleteMemberModal"
+                  class="hidden fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm"
+                >
+                  <div
+                    class="bg-slate-900 border border-white/10 rounded-[2.5rem] p-8 max-w-sm w-full shadow-2xl transform transition-all"
+                  >
+                    <div
+                      class="w-16 h-16 bg-red-500/10 rounded-2xl flex items-center justify-center mx-auto mb-6"
+                    >
+                      <i
+                        class="fas fa-exclamation-triangle text-2xl text-red-500"
+                      ></i>
+                    </div>
+
+                    <h3 class="text-xl font-bold text-white text-center">
+                      Confirm Deletion
+                    </h3>
+                    <p
+                      class="text-slate-400 text-sm text-center mt-2 leading-relaxed"
+                    >
+                      This action is irreversible. All biological links and
+                      generational data for this identity will be purged from
+                      the Nexus.
+                    </p>
+
+                    <div class="grid grid-cols-2 gap-4 mt-8">
+                      <button
+                        id="cancelDeleteBtn"
+                        class="py-4 rounded-2xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm transition-colors"
+                      >
+                        Abort
+                      </button>
+                      <button
+                        id="confirmDeleteBtn"
+                        class="py-4 rounded-2xl bg-red-600 hover:bg-red-500 text-white font-bold text-sm shadow-lg shadow-red-900/20 transition-all active:scale-95"
+                      >
+                        Purge Data
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              <div class="grid grid-cols-2 gap-4">
+              <div
+                id="noDetailsMsg"
+                class="h-full flex flex-col items-center justify-center text-slate-500 text-center opacity-40"
+              >
+                <p class="text-4xl mb-4">📝</p>
+                <p class="text-sm font-medium">Select a profile to edit</p>
+              </div>
+            </div>
+          </aside>
+        </main>
+
+        <div
+          id="addModal"
+          class="hidden fixed inset-0 bg-slate-950/60 backdrop-blur-md flex items-center justify-center z-[100] p-4"
+        >
+          <div
+            class="bg-white rounded-[3rem] shadow-2xl w-full max-w-lg overflow-hidden p-10 border border-slate-100"
+          >
+            <h2 class="text-3xl font-black text-slate-900 mb-2">
+              New Registry
+            </h2>
+            <p class="text-slate-500 mb-8 font-medium">
+              Add a new individual to the heritage database.
+            </p>
+
+            <form id="addMemberForm" class="space-y-6">
+              <div>
+                <label
+                  class="text-[10px] font-black uppercase text-slate-400 ml-1"
+                  >Full Identity Name</label
+                >
+                <input
+                  type="text"
+                  id="name"
+                  required
+                  class="w-full px-6 py-4 mt-2 rounded-2xl border-2 border-slate-100 focus:border-indigo-500 focus:bg-white bg-slate-50 outline-none text-lg transition-all"
+                  placeholder="e.g. John Smith"
+                />
+              </div>
+              <div class="grid grid-cols-2 gap-6">
                 <div>
-                  <label class="text-[10px] font-bold uppercase text-slate-500 ml-1">Gender</label>
-                  <select id="editGender" class="w-full bg-slate-800/50 border border-slate-700 rounded-2xl px-4 py-4 mt-1 outline-none">
+                  <label
+                    class="text-[10px] font-black uppercase text-slate-400 ml-1"
+                    >Gender</label
+                  >
+                  <select
+                    id="gender"
+                    required
+                    class="w-full px-5 py-4 mt-2 rounded-2xl border-2 border-slate-100 focus:border-indigo-500 bg-slate-50 outline-none"
+                  >
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
                     <option value="Other">Other</option>
                   </select>
                 </div>
                 <div>
-                    <label class="text-[10px] font-bold uppercase text-slate-500 ml-1">Birth Date</label>
-                    <input id="editBirthDate" type="date" class="w-full bg-slate-800/50 border border-slate-700 rounded-2xl px-4 py-4 mt-1 outline-none text-sm" />
+                  <label
+                    class="text-[10px] font-black uppercase text-slate-400 ml-1"
+                    >Birth Date</label
+                  >
+                  <input
+                    type="date"
+                    id="birthDate"
+                    class="w-full px-5 py-4 mt-2 rounded-2xl border-2 border-slate-100 outline-none bg-slate-50"
+                  />
                 </div>
               </div>
-            </div>
+            </form>
 
-            <button onclick="autoSave()" class="w-full bg-indigo-600 hover:bg-indigo-500 py-4 rounded-2xl font-bold text-lg transition-all shadow-lg shadow-indigo-900/20">
-              Save Changes
-            </button>
-
-            <div class="space-y-3 pt-6 border-t border-white/5">
-              <p class="text-[10px] font-black uppercase tracking-widest text-slate-500">Link Relationships</p>
-              
-              <button onclick="toggleParentForm()" class="w-full bg-slate-800/40 hover:bg-slate-800 p-4 rounded-2xl text-left flex justify-between items-center group transition-all">
-                <span class="text-sm font-semibold">Assign Parent</span>
-                <span class="text-indigo-400 group-hover:translate-x-1 transition-transform">→</span>
+            <div class="flex gap-4 mt-10">
+              <button
+                onclick="hideAddForm()"
+                class="flex-1 py-4 text-slate-400 font-bold hover:text-slate-600 transition-colors"
+              >
+                Dismiss
               </button>
-              <div id="parentForm" class="hidden bg-slate-800/60 p-4 rounded-2xl space-y-3 border border-indigo-500/20">
-                <input id="newParentName" placeholder="Parent Name" class="w-full bg-slate-900 px-4 py-2 rounded-xl text-sm" />
-                <input id="newParentId" placeholder="Parent ID" type="number" class="w-full bg-slate-900 px-4 py-2 rounded-xl text-sm" />
-                <button onclick="addParent()" class="w-full bg-indigo-600 py-2 rounded-xl text-sm font-bold">Link Parent</button>
-              </div>
-
-              <button onclick="toggleChildForm()" class="w-full bg-slate-800/40 hover:bg-slate-800 p-4 rounded-2xl text-left flex justify-between items-center group transition-all">
-                <span class="text-sm font-semibold">Assign Child</span>
-                <span class="text-indigo-400 group-hover:translate-x-1 transition-transform">→</span>
+              <button
+                onclick="addNewMember()"
+                class="flex-1 bg-indigo-600 text-white font-bold py-4 rounded-2xl shadow-xl shadow-indigo-200 hover:bg-indigo-700 transition-all"
+              >
+                Create Record
               </button>
-              <div id="childForm" class="hidden bg-slate-800/60 p-4 rounded-2xl space-y-3 border border-indigo-500/20">
-                <input id="newChildName" placeholder="Child Name" class="w-full bg-slate-900 px-4 py-2 rounded-xl text-sm" />
-                <input id="newChildId" placeholder="Child ID" type="number" class="w-full bg-slate-900 px-4 py-2 rounded-xl text-sm" />
-                <button onclick="addChild()" class="w-full bg-indigo-600 py-2 rounded-xl text-sm font-bold">Link Child</button>
-              </div>
             </div>
-          </div>
-
-          <div id="noDetailsMsg" class="h-full flex flex-col items-center justify-center text-slate-500 text-center opacity-40">
-            <p class="text-4xl mb-4">📝</p>
-            <p class="text-sm font-medium">Select a profile to edit</p>
           </div>
         </div>
-      </aside>
-    </main>
 
-    <div id="addModal" class="hidden fixed inset-0 bg-slate-950/60 backdrop-blur-md flex items-center justify-center z-[100] p-4">
-        <div class="bg-white rounded-[3rem] shadow-2xl w-full max-w-lg overflow-hidden p-10 border border-slate-100">
-        <h2 class="text-3xl font-black text-slate-900 mb-2">New Registry</h2>
-        <p class="text-slate-500 mb-8 font-medium">Add a new individual to the heritage database.</p>
-        
-        <form id="addMemberForm" class="space-y-6">
-          <div>
-            <label class="text-[10px] font-black uppercase text-slate-400 ml-1">Full Identity Name</label>
-            <input type="text" id="name" required class="w-full px-6 py-4 mt-2 rounded-2xl border-2 border-slate-100 focus:border-indigo-500 focus:bg-white bg-slate-50 outline-none text-lg transition-all" placeholder="e.g. John Smith" />
-          </div>
-          <div class="grid grid-cols-2 gap-6">
-            <div>
-              <label class="text-[10px] font-black uppercase text-slate-400 ml-1">Gender</label>
-              <select id="gender" required class="w-full px-5 py-4 mt-2 rounded-2xl border-2 border-slate-100 focus:border-indigo-500 bg-slate-50 outline-none">
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-            <div>
-              <label class="text-[10px] font-black uppercase text-slate-400 ml-1">Birth Date</label>
-              <input type="date" id="birthDate" class="w-full px-5 py-4 mt-2 rounded-2xl border-2 border-slate-100 outline-none bg-slate-50" />
-            </div>
-          </div>
-        </form>
+        <script>
+          let allMembers = {};
+          let currentMemberKey = null;
 
-        <div class="flex gap-4 mt-10">
-          <button onclick="hideAddForm()" class="flex-1 py-4 text-slate-400 font-bold hover:text-slate-600 transition-colors">Dismiss</button>
-          <button onclick="addNewMember()" class="flex-1 bg-indigo-600 text-white font-bold py-4 rounded-2xl shadow-xl shadow-indigo-200 hover:bg-indigo-700 transition-all">Create Record</button>
-        </div>
-      </div>
-    </div>
+          // --- Modal Controls ---
+          const deleteModal = document.getElementById("deleteMemberModal");
 
-    <script>
-      let allMembers = {};
-      let currentMemberKey = null;
+          document
+            .getElementById("deleteMemberBtn")
+            .addEventListener("click", () => {
+              deleteModal.classList.remove("hidden");
+            });
 
-      async function loadMembers() {
-        try {
-          const res = await fetch("/get_all_members");
-          allMembers = await res.json();
-          renderSidebar();
-          if (currentMemberKey) refreshVisualizer();
-        } catch (e) {
-          console.error("Error loading members", e);
-        }
-      }
+          document
+            .getElementById("cancelDeleteBtn")
+            .addEventListener("click", () => {
+              deleteModal.classList.add("hidden");
+            });
 
-      function toggleSidebar() {
-        const sidebar = document.getElementById("sidebar");
-        const backdrop = document.getElementById("sidebarBackdrop");
-        
-        if (sidebar.classList.contains("-translate-x-full")) {
-            sidebar.classList.remove("-translate-x-full");
-            backdrop.classList.remove("hidden");
-        } else {
-            sidebar.classList.add("-translate-x-full");
-            backdrop.classList.add("hidden");
-        }
-      }
+          // Close modal if clicking outside the inner box
+          deleteModal.addEventListener("click", (e) => {
+            if (e.target === deleteModal) deleteModal.classList.add("hidden");
+          });
 
-      function toggleDetails() {
-        const wrapper = document.getElementById("detailsWrapper");
-        
-        if (wrapper.classList.contains("opacity-0")) {
-            wrapper.classList.remove("opacity-0", "pointer-events-none");
-            wrapper.classList.add("opacity-100", "pointer-events-auto");
-        } else {
-            wrapper.classList.add("opacity-0", "pointer-events-none");
-            wrapper.classList.remove("opacity-100", "pointer-events-auto");
-        }
-      }
+          // --- Delete Logic ---
+          async function deleteMember() {
+            if (!currentMemberKey) return;
 
-      function renderSidebar() {
-        const container = document.getElementById("membersList");
-        container.innerHTML = "";
-        const allMembers_ordered = Object.entries(allMembers).sort((a, b) => a[1].name.localeCompare(b[1].name));
-        
-        Object.entries(allMembers).forEach(([key, member]) => {
-          const emoji = member.gender === "Female" ? "👩" : "👨";
-          const div = document.createElement("div");
-          div.className = `p-4 rounded-2xl border cursor-pointer transition-all flex items-center gap-4 ${currentMemberKey === key ? "bg-indigo-50 border-indigo-200 ring-2 ring-indigo-500" : "bg-white border-slate-100 hover:border-indigo-200"}`;
-          div.innerHTML = `
+            // UI Loading State
+            const confirmBtn = document.getElementById("confirmDeleteBtn");
+            const originalText = confirmBtn.innerText;
+            confirmBtn.innerText = "Purging...";
+            confirmBtn.disabled = true;
+
+            try {
+              const response = await fetch("/delete_member", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ uid: currentMemberKey }),
+              });
+
+              if (response.ok) {
+                deleteModal.classList.add("hidden");
+
+                // Re-sync local data
+                await loadMembers();
+
+                const keys = Object.keys(allMembers);
+                if (keys.length > 0) {
+                  // Select the first available member in the list
+                  selectMember(keys[0]);
+                } else {
+                  // If no members left, reset UI
+                  currentMemberKey = null;
+                  document
+                    .getElementById("detailsPanel")
+                    .classList.add("hidden");
+                  document
+                    .getElementById("noSelectionMsg")
+                    .classList.remove("hidden");
+                  document
+                    .getElementById("noDetailsMsg")
+                    .classList.remove("hidden");
+                  document.getElementById("rowParents").innerHTML = "";
+                  document.getElementById("rowCurrent").innerHTML = "";
+                  document.getElementById("rowChildren").innerHTML = "";
+                }
+              } else {
+                alert("System Error: Could not purge record.");
+              }
+            } catch (error) {
+              console.error("Critical Network Failure:", error);
+            } finally {
+              confirmBtn.innerText = originalText;
+              confirmBtn.disabled = false;
+            }
+          }
+
+          // Bind the button
+          document
+            .getElementById("confirmDeleteBtn")
+            .addEventListener("click", deleteMember);
+
+          async function loadMembers() {
+            try {
+              const res = await fetch("/get_all_members");
+              allMembers = await res.json();
+              renderSidebar();
+              if (currentMemberKey) refreshVisualizer();
+            } catch (e) {
+              console.error("Error loading members", e);
+            }
+          }
+
+          function toggleSidebar() {
+            const sidebar = document.getElementById("sidebar");
+            const backdrop = document.getElementById("sidebarBackdrop");
+
+            if (sidebar.classList.contains("-translate-x-full")) {
+              sidebar.classList.remove("-translate-x-full");
+              backdrop.classList.remove("hidden");
+            } else {
+              sidebar.classList.add("-translate-x-full");
+              backdrop.classList.add("hidden");
+            }
+          }
+
+          function toggleDetails() {
+            const wrapper = document.getElementById("detailsWrapper");
+
+            if (wrapper.classList.contains("opacity-0")) {
+              wrapper.classList.remove("opacity-0", "pointer-events-none");
+              wrapper.classList.add("opacity-100", "pointer-events-auto");
+            } else {
+              wrapper.classList.add("opacity-0", "pointer-events-none");
+              wrapper.classList.remove("opacity-100", "pointer-events-auto");
+            }
+          }
+
+          function renderSidebar() {
+            const container = document.getElementById("membersList");
+            container.innerHTML = "";
+            const allMembers_ordered = Object.entries(allMembers).sort((a, b) =>
+              a[1].name.localeCompare(b[1].name),
+            );
+
+            Object.entries(allMembers).forEach(([key, member]) => {
+              const emoji = member.gender === "Female" ? "👩" : "👨";
+              const div = document.createElement("div");
+              div.className = `p-4 rounded-2xl border cursor-pointer transition-all flex items-center gap-4 ${currentMemberKey === key ? "bg-indigo-50 border-indigo-200 ring-2 ring-indigo-500" : "bg-white border-slate-100 hover:border-indigo-200"}`;
+              div.innerHTML = `
                     <div class="text-3xl">${emoji}</div>
                     <div class="flex-1 overflow-hidden">
                         <div class="font-bold text-lg truncate">${member.name}</div>
                         <div class="text-slate-400 text-xs font-mono">ID: ${member.uniqueId}</div>
                     </div>
                 `;
-          div.onclick = () => selectMember(key);
-          container.appendChild(div);
-        });
-      }
-
-      function selectMember(key) {
-        currentMemberKey = key;
-        const member = allMembers[key];
-
-        document.getElementById("noSelectionMsg").classList.add("hidden");
-        document.getElementById("noDetailsMsg").classList.add("hidden");
-        document.getElementById("detailsPanel").classList.remove("hidden");
-        
-        // Show Mobile "Edit Info" Button
-        document.getElementById("mobileEditBtn").classList.remove("hidden");
-        document.getElementById("mobileEditBtn").classList.add("inline-block");
-
-        document.getElementById("editName").value = member.name;
-        document.getElementById("editGender").value = member.gender;
-        document.getElementById("editBirthDate").value = member.birthDate || "";
-
-        renderSidebar();
-        refreshVisualizer();
-
-        // Auto-close sidebar on mobile after selecting a member
-        if (window.innerWidth < 1024) {
-          const sidebar = document.getElementById("sidebar");
-          if (!sidebar.classList.contains("-translate-x-full")) {
-              toggleSidebar();
+              div.onclick = () => selectMember(key);
+              container.appendChild(div);
+            });
           }
-        }
-      }
 
-      function refreshVisualizer() {
-        if (!currentMemberKey) return;
-        const target = allMembers[currentMemberKey];
+          function selectMember(key) {
+            currentMemberKey = key;
+            const member = allMembers[key];
 
-        // 1. Parents Row
-        const parentsRow = document.getElementById("rowParents");
-        parentsRow.innerHTML = "";
-        (target.parents || []).forEach((pStr) => {
-          const [name, id] = pStr.split(" ^ ");
-          const tabbedName = name[0].toUpperCase() + name.slice(1);
-          parentsRow.appendChild(
-            createMemberCard(tabbedName, id, false, "", true, null),
-          ); // showRemove = true
-        });
+            document.getElementById("noSelectionMsg").classList.add("hidden");
+            document.getElementById("noDetailsMsg").classList.add("hidden");
+            document.getElementById("detailsPanel").classList.remove("hidden");
 
-        // 2. Current Generation (Target + Partners/Siblings) - NO remove button
-        const currentGenRow = document.getElementById("rowCurrent");
-        currentGenRow.innerHTML = "";
+            // Show Mobile "Edit Info" Button
+            document.getElementById("mobileEditBtn").classList.remove("hidden");
+            document
+              .getElementById("mobileEditBtn")
+              .classList.add("inline-block");
 
-        // Add Target
-        currentGenRow.appendChild(
-          createMemberCard(target.name, target.uniqueId, true),
-        );
+            document.getElementById("editName").value = member.name;
+            document.getElementById("editGender").value = member.gender;
+            document.getElementById("editBirthDate").value =
+              member.birthDate || "";
 
-        // Add siblings (from parents' children)
-        const parents = target.parents;
-        const added_children = [target.name];
-        parents.forEach((p) => {
-          const children = allMembers[p].children || [];
-          // console.log(allMembers[p], p)
-          children.forEach((c) => {
-            const semi_target = allMembers[c];
-            const name = semi_target.name;
+            renderSidebar();
+            refreshVisualizer();
 
-            const id = semi_target.uniqueId;
-            // console.log(name, id, !added_children.includes(name))
-            if (!added_children.includes(name)) {
-              currentGenRow.appendChild(
-                createMemberCard(name, id, false, "border-pink-200 bg-pink-50"),
-              );
-              added_children.push(name);
+            // Auto-close sidebar on mobile after selecting a member
+            if (window.innerWidth < 1024) {
+              const sidebar = document.getElementById("sidebar");
+              if (!sidebar.classList.contains("-translate-x-full")) {
+                toggleSidebar();
+              }
             }
-          });
-        });
+          }
 
-        // 3. Children Row - with Remove button
-        const childrenRow = document.getElementById("rowChildren");
-        childrenRow.innerHTML = "";
-        Array.from(target.children || []).forEach((cStr) => {
-          const [name, id] = cStr.split(" ^ ");
-          const tabbedName = name[0].toUpperCase() + name.slice(1);
-          childrenRow.appendChild(
-            createMemberCard(tabbedName, id, false, "", true, null),
-          ); // showRemove = true
-        });
-      }
+          function refreshVisualizer() {
+            if (!currentMemberKey) return;
+            const target = allMembers[currentMemberKey];
 
-      function createMemberCard(
-        name,
-        id,
-        isActive = false,
-        extraClasses = "",
-        showRemove = false,
-        onRemove = null,
-      ) {
-        const card = document.createElement("div");
-        card.className = `tree-card min-w-[150px] p-4 rounded-2xl shadow-sm text-center bg-white border cursor-pointer relative ${isActive ? "active shadow-lg" : "border-slate-200"} ${extraClasses}`;
+            // 1. Parents Row
+            const parentsRow = document.getElementById("rowParents");
+            parentsRow.innerHTML = "";
+            (target.parents || []).forEach((pStr) => {
+              const [name, id] = pStr.split(" ^ ");
+              const tabbedName = name[0].toUpperCase() + name.slice(1);
+              parentsRow.appendChild(
+                createMemberCard(tabbedName, id, false, "", true, null),
+              ); // showRemove = true
+            });
 
-        card.innerHTML = `
+            // 2. Current Generation (Target + Partners/Siblings) - NO remove button
+            const currentGenRow = document.getElementById("rowCurrent");
+            currentGenRow.innerHTML = "";
+
+            // Add Target
+            currentGenRow.appendChild(
+              createMemberCard(target.name, target.uniqueId, true),
+            );
+
+            // Add siblings (from parents' children)
+            const parents = target.parents;
+            const added_children = [target.name];
+            parents.forEach((p) => {
+              const children = allMembers[p].children || [];
+              // console.log(allMembers[p], p)
+              children.forEach((c) => {
+                const semi_target = allMembers[c];
+                const name = semi_target.name;
+
+                const id = semi_target.uniqueId;
+                // console.log(name, id, !added_children.includes(name))
+                if (!added_children.includes(name)) {
+                  currentGenRow.appendChild(
+                    createMemberCard(
+                      name,
+                      id,
+                      false,
+                      "border-pink-200 bg-pink-50",
+                    ),
+                  );
+                  added_children.push(name);
+                }
+              });
+            });
+
+            // 3. Children Row - with Remove button
+            const childrenRow = document.getElementById("rowChildren");
+            childrenRow.innerHTML = "";
+            Array.from(target.children || []).forEach((cStr) => {
+              const [name, id] = cStr.split(" ^ ");
+              const tabbedName = name[0].toUpperCase() + name.slice(1);
+              childrenRow.appendChild(
+                createMemberCard(tabbedName, id, false, "", true, null),
+              ); // showRemove = true
+            });
+          }
+
+          function createMemberCard(
+            name,
+            id,
+            isActive = false,
+            extraClasses = "",
+            showRemove = false,
+            onRemove = null,
+          ) {
+            const card = document.createElement("div");
+            card.className = `tree-card min-w-[150px] p-4 rounded-2xl shadow-sm text-center bg-white border cursor-pointer relative ${isActive ? "active shadow-lg" : "border-slate-200"} ${extraClasses}`;
+
+            card.innerHTML = `
         <div class="text-2xl mb-1">${findGenderEmoji(name, id)}</div>
         <div class="font-bold text-sm leading-tight">${name}</div>
         <div class="text-[10px] text-slate-400 mt-1">ID: ${id}</div>
@@ -428,292 +921,307 @@
         }
     `;
 
-        card.onclick = () => {
-          const key = `${String(name).toLowerCase()} ^ ${id}`;
-          if (allMembers[key]) selectMember(key);
-          else alert("Member details not found in database.");
-        };
+            card.onclick = () => {
+              const key = `${String(name).toLowerCase()} ^ ${id}`;
+              if (allMembers[key]) selectMember(key);
+              else alert("Member details not found in database.");
+            };
 
-        return card;
-      }
+            return card;
+          }
 
-      function findGenderEmoji(name, id) {
-        const key = `${String(name).toLowerCase()} ^ ${id}`;
-        const m = allMembers[key];
-        if (!m) return "👤";
-        return m.gender === "Female" ? "👩" : "👨";
-      }
+          function findGenderEmoji(name, id) {
+            const key = `${String(name).toLowerCase()} ^ ${id}`;
+            const m = allMembers[key];
+            if (!m) return "👤";
+            return m.gender === "Female" ? "👩" : "👨";
+          }
 
-      // ==================== REMOVE RELATIONSHIP ====================
-      async function removeRelationship(type, name, id) {
-        if (!currentMemberKey) return;
-        const confirmMsg =
-          type === "parent"
-            ? `Remove ${name} as parent?`
-            : `Remove ${name} as child?`;
+          // ==================== REMOVE RELATIONSHIP ====================
+          async function removeRelationship(type, name, id) {
+            if (!currentMemberKey) return;
+            const confirmMsg =
+              type === "parent"
+                ? `Remove ${name} as parent?`
+                : `Remove ${name} as child?`;
 
-        if (!confirm(confirmMsg)) return;
+            if (!confirm(confirmMsg)) return;
 
-        const member = allMembers[currentMemberKey];
-        const relKey = `${String(name).toLowerCase()} ^ ${id}`;
+            const member = allMembers[currentMemberKey];
+            const relKey = `${String(name).toLowerCase()} ^ ${id}`;
 
-        if (type === "parent") {
-          // Remove from member's parents
-          member.parents = (member.parents || []).filter((p) => p !== relKey);
+            if (type === "parent") {
+              // Remove from member's parents
+              member.parents = (member.parents || []).filter(
+                (p) => p !== relKey,
+              );
 
-          // Remove member from parent's children list
-          if (allMembers[relKey]) {
-            const parent = allMembers[relKey];
-            parent.children = (parent.children || []).filter(
-              (c) =>
-                c !==
+              // Remove member from parent's children list
+              if (allMembers[relKey]) {
+                const parent = allMembers[relKey];
+                parent.children = (parent.children || []).filter(
+                  (c) =>
+                    c !==
+                    `${String(member.name).toLowerCase()} ^ ${member.uniqueId}`,
+                );
+                await fetch("/update_member", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ key: relKey, member: parent }),
+                });
+              }
+            } else if (type === "child") {
+              // Remove from member's children
+              member.children = (member.children || []).filter(
+                (c) => c !== relKey,
+              );
+
+              // Remove member from child's parents list
+              if (allMembers[relKey]) {
+                const child = allMembers[relKey];
+                child.parents = (child.parents || []).filter(
+                  (p) =>
+                    p !==
+                    `${String(member.name).toLowerCase()} ^ ${member.uniqueId}`,
+                );
+                await fetch("/update_member", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ key: relKey, member: child }),
+                });
+              }
+            }
+
+            // Update current member
+            await fetch("/update_member", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ key: currentMemberKey, member }),
+            });
+
+            loadMembers(); // Refresh everything
+          }
+
+          // ==================== Existing Functions (cleaned up) ====================
+          async function autoSave() {
+            if (!currentMemberKey) return;
+            const member = allMembers[currentMemberKey];
+            const prev_name = member.name;
+            const prev_key = currentMemberKey;
+            member.name = document.getElementById("editName").value;
+            member.gender = document.getElementById("editGender").value;
+            member.birthDate = document.getElementById("editBirthDate").value;
+
+            const parents = member.parents || [];
+
+            parents.forEach(async (p) => {
+              const parent = allMembers[p];
+              parent.children = parent.children.filter((c) => c !== prev_key);
+              parent.children.push(
                 `${String(member.name).toLowerCase()} ^ ${member.uniqueId}`,
-            );
-            await fetch("/update_member", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ key: relKey, member: parent }),
+              );
+              await fetch("/update_member", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ key: currentMemberKey, member: parent }),
+              });
             });
-          }
-        } else if (type === "child") {
-          // Remove from member's children
-          member.children = (member.children || []).filter((c) => c !== relKey);
 
-          // Remove member from child's parents list
-          if (allMembers[relKey]) {
-            const child = allMembers[relKey];
-            child.parents = (child.parents || []).filter(
-              (p) =>
-                p !==
+            const children = member.children || [];
+            children.forEach(async (c) => {
+              const child = allMembers[c];
+              child.parents = child.parents.filter((p) => p !== prev_key);
+              child.parents.push(
                 `${String(member.name).toLowerCase()} ^ ${member.uniqueId}`,
-            );
+              );
+              await fetch("/update_member", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ key: currentMemberKey, member: child }),
+              });
+            });
+            console.log(member);
             await fetch("/update_member", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ key: relKey, member: child }),
+              body: JSON.stringify({ key: currentMemberKey, member }),
             });
-          }
-        }
 
-        // Update current member
-        await fetch("/update_member", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ key: currentMemberKey, member }),
-        });
-
-        loadMembers(); // Refresh everything
-      }
-
-      // ==================== Existing Functions (cleaned up) ====================
-      async function autoSave() {
-        if (!currentMemberKey) return;
-        const member = allMembers[currentMemberKey];
-        const prev_name = member.name;
-        const prev_key = currentMemberKey
-        member.name = document.getElementById("editName").value;
-        member.gender = document.getElementById("editGender").value;
-        member.birthDate = document.getElementById("editBirthDate").value;
-
-        const parents = member.parents || [];
-        
-        parents.forEach(async (p) => {
-          const parent = allMembers[p];
-          parent.children = parent.children.filter(c => c !== prev_key);
-          parent.children.push(`${String(member.name).toLowerCase()} ^ ${member.uniqueId}`);
-          await fetch("/update_member", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ key: currentMemberKey, member: parent }),
-        });
-        })
-
-        const children = member.children || [];
-        children.forEach(async(c) => {
-          const child = allMembers[c];
-          child.parents = child.parents.filter(p => p !== prev_key);
-          child.parents.push(`${String(member.name).toLowerCase()} ^ ${member.uniqueId}`);
-          await fetch("/update_member", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ key: currentMemberKey, member: child }),
-        });
-        })
-        console.log(member)
-        await fetch("/update_member", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ key: currentMemberKey, member }),
-        });
-
-
-        loadMembers();
-        selectMember(String(member.name).toLowerCase() + " ^ " + member.uniqueId);
-      }
-
-      async function addNewMember() {
-        const name = document.getElementById("name").value.trim();
-        const gender = document.getElementById("gender").value;
-        const birthDate = document.getElementById("birthDate").value;
-
-        const res = await fetch("/add_member", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, gender, birthDate }),
-        });
-        if (res.ok) {
-          hideAddForm();
-          loadMembers();
-        }
-      }
-
-      async function addParent() {
-        const name = document.getElementById("newParentName").value.trim();
-        const id = document.getElementById("newParentId").value;
-        if (!name || !id) return alert("Name and ID are required");
-
-        const parentKey = `${String(name).toLowerCase()} ^ ${id}`;
-        if (!allMembers[parentKey]) return alert("Parent not found in database.");
-        const member = allMembers[currentMemberKey];
-
-        if (!member.parents) member.parents = [];
-        if (!member.parents.includes(parentKey)) member.parents.push(parentKey);
-
-        await fetch("/update_member", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ key: currentMemberKey, member }),
-        });
-
-        if (allMembers[parentKey]) {
-          const parent = allMembers[parentKey];
-          if (!parent.children) parent.children = [];
-          const childEntry = `${String(member.name).toLowerCase()} ^ ${member.uniqueId}`;
-          if (!parent.children.includes(childEntry))
-            parent.children.push(childEntry);
-
-          await fetch("/update_member", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ key: parentKey, member: parent }),
-          });
-        }
-
-        loadMembers();
-        document.getElementById("parentForm").classList.add("hidden");
-      }
-
-      async function addChild() {
-        const name = document.getElementById("newChildName").value.trim();
-        const id = document.getElementById("newChildId").value;
-        if (!name || !id) return alert("Name and ID are required");
-
-        const childKey = `${String(name).toLowerCase()} ^ ${id}`;
-        if (!allMembers[childKey]) return alert("Child not found in database.");
-        const member = allMembers[currentMemberKey];
-
-        if (!member.children) member.children = [];
-        if (!member.children.includes(childKey)) member.children.push(childKey);
-
-        await fetch("/update_member", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ key: currentMemberKey, member }),
-        });
-
-        if (allMembers[childKey]) {
-          const child = allMembers[childKey];
-          if (!child.parents) child.parents = [];
-          const parentEntry = `${String(member.name).toLowerCase()} ^ ${member.uniqueId}`;
-          if (!child.parents.includes(parentEntry))
-            child.parents.push(parentEntry);
-
-          await fetch("/update_member", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ key: childKey, member: child }),
-          });
-        }
-
-        loadMembers();
-        document.getElementById("childForm").classList.add("hidden");
-      }
-
-      // Remove Parent or Child Relationship (Bidirectional)
-      async function removeRelationship(name, id, buttonElement) {
-        if (!confirm(`Remove ${name} from this relationship?`)) return;
-
-        const target = allMembers[currentMemberKey];
-        const relKey = `${String(name).toLowerCase()} ^ ${id}`;
-
-        // Determine if it's a parent or child
-        const isParent = (target.parents || []).some((p) => p === relKey);
-        const isChild = (target.children || []).some((c) => c === relKey);
-
-        if (!isParent && !isChild) return;
-
-        if (isParent) {
-          // Remove from target's parents
-          target.parents = target.parents.filter((p) => p !== relKey);
-
-          // Remove from parent's children list
-          if (allMembers[relKey]) {
-            const parent = allMembers[relKey];
-            parent.children = (parent.children || []).filter(
-              (c) =>
-                c !==
-                `${String(target.name).toLowerCase()} ^ ${target.uniqueId}`,
+            loadMembers();
+            selectMember(
+              String(member.name).toLowerCase() + " ^ " + member.uniqueId,
             );
+          }
+
+          async function addNewMember() {
+            const name = document.getElementById("name").value.trim();
+            const gender = document.getElementById("gender").value;
+            const birthDate = document.getElementById("birthDate").value;
+
+            const res = await fetch("/add_member", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ name, gender, birthDate }),
+            });
+            if (res.ok) {
+              hideAddForm();
+              loadMembers();
+            }
+          }
+
+          async function addParent() {
+            const name = document.getElementById("newParentName").value.trim();
+            const id = document.getElementById("newParentId").value;
+            if (!name || !id) return alert("Name and ID are required");
+
+            const parentKey = `${String(name).toLowerCase()} ^ ${id}`;
+            if (!allMembers[parentKey])
+              return alert("Parent not found in database.");
+            const member = allMembers[currentMemberKey];
+
+            if (!member.parents) member.parents = [];
+            if (!member.parents.includes(parentKey))
+              member.parents.push(parentKey);
+
             await fetch("/update_member", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ key: relKey, member: parent }),
+              body: JSON.stringify({ key: currentMemberKey, member }),
             });
-          }
-        } else if (isChild) {
-          // Remove from target's children
-          target.children = target.children.filter((c) => c !== relKey);
 
-          // Remove from child's parents list
-          if (allMembers[relKey]) {
-            const child = allMembers[relKey];
-            child.parents = (child.parents || []).filter(
-              (p) =>
-                p !==
-                `${String(target.name).toLowerCase()} ^ ${target.uniqueId}`,
-            );
+            if (allMembers[parentKey]) {
+              const parent = allMembers[parentKey];
+              if (!parent.children) parent.children = [];
+              const childEntry = `${String(member.name).toLowerCase()} ^ ${member.uniqueId}`;
+              if (!parent.children.includes(childEntry))
+                parent.children.push(childEntry);
+
+              await fetch("/update_member", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ key: parentKey, member: parent }),
+              });
+            }
+
+            loadMembers();
+            document.getElementById("parentForm").classList.add("hidden");
+          }
+
+          async function addChild() {
+            const name = document.getElementById("newChildName").value.trim();
+            const id = document.getElementById("newChildId").value;
+            if (!name || !id) return alert("Name and ID are required");
+
+            const childKey = `${String(name).toLowerCase()} ^ ${id}`;
+            if (!allMembers[childKey])
+              return alert("Child not found in database.");
+            const member = allMembers[currentMemberKey];
+
+            if (!member.children) member.children = [];
+            if (!member.children.includes(childKey))
+              member.children.push(childKey);
+
             await fetch("/update_member", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ key: relKey, member: child }),
+              body: JSON.stringify({ key: currentMemberKey, member }),
             });
+
+            if (allMembers[childKey]) {
+              const child = allMembers[childKey];
+              if (!child.parents) child.parents = [];
+              const parentEntry = `${String(member.name).toLowerCase()} ^ ${member.uniqueId}`;
+              if (!child.parents.includes(parentEntry))
+                child.parents.push(parentEntry);
+
+              await fetch("/update_member", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ key: childKey, member: child }),
+              });
+            }
+
+            loadMembers();
+            document.getElementById("childForm").classList.add("hidden");
           }
-        }
 
-        // Update current member
-        await fetch("/update_member", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ key: currentMemberKey, member: target }),
-        });
+          // Remove Parent or Child Relationship (Bidirectional)
+          async function removeRelationship(name, id, buttonElement) {
+            if (!confirm(`Remove ${name} from this relationship?`)) return;
 
-        loadMembers(); // Refresh everything
-      }
+            const target = allMembers[currentMemberKey];
+            const relKey = `${String(name).toLowerCase()} ^ ${id}`;
 
-      function showAddForm() {
-        document.getElementById("addModal").classList.remove("hidden");
-      }
-      function hideAddForm() {
-        document.getElementById("addModal").classList.add("hidden");
-      }
-      function toggleParentForm() {
-        document.getElementById("parentForm").classList.toggle("hidden");
-      }
-      function toggleChildForm() {
-        document.getElementById("childForm").classList.toggle("hidden");
-      }
+            // Determine if it's a parent or child
+            const isParent = (target.parents || []).some((p) => p === relKey);
+            const isChild = (target.children || []).some((c) => c === relKey);
 
-      window.onload = loadMembers;
-    </script>
+            if (!isParent && !isChild) return;
+
+            if (isParent) {
+              // Remove from target's parents
+              target.parents = target.parents.filter((p) => p !== relKey);
+
+              // Remove from parent's children list
+              if (allMembers[relKey]) {
+                const parent = allMembers[relKey];
+                parent.children = (parent.children || []).filter(
+                  (c) =>
+                    c !==
+                    `${String(target.name).toLowerCase()} ^ ${target.uniqueId}`,
+                );
+                await fetch("/update_member", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ key: relKey, member: parent }),
+                });
+              }
+            } else if (isChild) {
+              // Remove from target's children
+              target.children = target.children.filter((c) => c !== relKey);
+
+              // Remove from child's parents list
+              if (allMembers[relKey]) {
+                const child = allMembers[relKey];
+                child.parents = (child.parents || []).filter(
+                  (p) =>
+                    p !==
+                    `${String(target.name).toLowerCase()} ^ ${target.uniqueId}`,
+                );
+                await fetch("/update_member", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ key: relKey, member: child }),
+                });
+              }
+            }
+
+            // Update current member
+            await fetch("/update_member", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ key: currentMemberKey, member: target }),
+            });
+
+            loadMembers(); // Refresh everything
+          }
+
+          function showAddForm() {
+            document.getElementById("addModal").classList.remove("hidden");
+          }
+          function hideAddForm() {
+            document.getElementById("addModal").classList.add("hidden");
+          }
+          function toggleParentForm() {
+            document.getElementById("parentForm").classList.toggle("hidden");
+          }
+          function toggleChildForm() {
+            document.getElementById("childForm").classList.toggle("hidden");
+          }
+
+          window.onload = loadMembers;
+        </script>
+      </body>
+    </html>
   </body>
 </html>
