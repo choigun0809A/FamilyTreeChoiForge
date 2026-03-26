@@ -12,7 +12,7 @@ def load_firebase():
     try:
         envVar = os.environ['FamilyTreeCred']
 
-        # print(envVar)
+        
 
         cred = credentials.Certificate(envVar)
         initialize_app(cred)
@@ -21,6 +21,7 @@ def load_firebase():
 
         requestRef = db.collection('requests')
         members_ref = db.collection('members')
+        print("loaded!")
     except Exception as e:
         print(e)
     
