@@ -146,13 +146,19 @@ def get_all_members():
 
 def delete_member(key):
     member = members_ref.document(key).get().to_dict()
+    
+    print(member['children'])
     for child in member['children']:
         parents = members_ref.document(child).get().to_dict()['parents']
         parents.remove(key)
+        print(parents)
+    
+    print(member['parents'])
     
     for parent in member['parents']:
         children = members_ref.document(parent).get().to_dict()['children']
         children.remove(key)
+        print(children)
         
     members_ref.document(key).delete()
 
