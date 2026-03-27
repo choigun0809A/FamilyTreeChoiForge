@@ -12,12 +12,12 @@
         body {
             font-family: "Plus Jakarta Sans", sans-serif;
             background-color: #0f172a;
-            /* Subtle grid pattern background */
             background-image: 
                 linear-gradient(rgba(30, 41, 59, 0.5) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(30, 41, 59, 0.5) 1px, transparent 1px);
             background-size: 40px 40px;
-            height: 100vh;
+            /* STABILITY FIX: Changed height to min-height and used dvh for mobile browsers */
+            min-height: 100dvh;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -55,20 +55,21 @@
         }
     </style>
 </head>
-<body class="p-4">
-    <div class="max-w-[440px] w-full">
-        <div class="text-center mb-8">
-            <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 mb-4">
-                <i class="fas fa-plus-circle text-2xl text-indigo-400"></i>
+<body class="p-4 sm:p-6">
+    <div class="max-w-[440px] w-full py-6 md:py-10 my-auto">
+        
+        <div class="text-center mb-6 md:mb-8">
+            <div class="inline-flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 mb-3 md:mb-4">
+                <i class="fas fa-plus-circle text-xl md:text-2xl text-indigo-400"></i>
             </div>
-            <h1 class="text-3xl font-extrabold text-white tracking-tight">Шинэ хэрэглэгч боло</h1>
-            <p class="text-slate-400 mt-2 font-medium">Хүсэлтээ илгээх булан</p>
+            <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight">Шинэ хэрэглэгч болох</h1>
+            <p class="text-slate-400 mt-1 md:mt-2 font-medium text-sm md:text-base">Хүсэлтээ илгээх булан</p>
         </div>
 
-        <div class="glass-card rounded-[2.5rem] p-8 md:p-10">
-            <form id="signupForm" class="space-y-5">
-                <div class="space-y-2">
-                    <label class="text-xs font-black uppercase tracking-widest text-slate-500 ml-1" for="email">
+        <div class="glass-card rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-10 transition-all">
+            <form id="signupForm" class="space-y-4 md:space-y-5">
+                <div class="space-y-1.5 md:space-y-2">
+                    <label class="text-[10px] md:text-xs font-black uppercase tracking-widest text-slate-500 ml-1" for="email">
                         Gmail
                     </label>
                     <input
@@ -76,12 +77,12 @@
                         id="email"
                         required
                         placeholder="user@nexus.io"
-                        class="input-field w-full px-5 py-4 rounded-2xl outline-none placeholder:text-slate-600"
+                        class="input-field w-full px-5 py-3.5 md:py-4 rounded-2xl outline-none placeholder:text-slate-600 text-sm md:text-base"
                     />
                 </div>
 
-                <div class="space-y-2">
-                    <label class="text-xs font-black uppercase tracking-widest text-slate-500 ml-1" for="password">
+                <div class="space-y-1.5 md:space-y-2">
+                    <label class="text-[10px] md:text-xs font-black uppercase tracking-widest text-slate-500 ml-1" for="password">
                         Нууц үг
                     </label>
                     <input
@@ -90,29 +91,29 @@
                         required
                         minlength="8"
                         placeholder="••••••••"
-                        class="input-field w-full px-5 py-4 rounded-2xl outline-none font-mono"
+                        class="input-field w-full px-5 py-3.5 md:py-4 rounded-2xl outline-none font-mono text-sm md:text-base"
                     />
                 </div>
 
-                <div class="space-y-2">
-                    <label class="text-xs font-black uppercase tracking-widest text-slate-500 ml-1" for="confirm_password">
-                        Дахин нууц үгээ оруулна уу
+                <div class="space-y-1.5 md:space-y-2">
+                    <label class="text-[10px] md:text-xs font-black uppercase tracking-widest text-slate-500 ml-1" for="confirm_password">
+                        Нууц үгээ давтах
                     </label>
                     <input
                         type="password"
                         id="confirm_password"
                         required
                         placeholder="••••••••"
-                        class="input-field w-full px-5 py-4 rounded-2xl outline-none font-mono"
+                        class="input-field w-full px-5 py-3.5 md:py-4 rounded-2xl outline-none font-mono text-sm md:text-base"
                     />
                 </div>
 
                 <button
                     type="submit"
                     id="submitBtn"
-                    class="nexus-btn w-full text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-3 mt-4"
+                    class="nexus-btn w-full text-white font-bold py-3.5 md:py-4 rounded-2xl flex items-center justify-center gap-3 mt-4 active:scale-95 transition-transform"
                 >
-                    <span id="btnText">Хүсэлтээ илгээх</span>
+                    <span id="btnText" class="text-sm md:text-base">Хүсэлтээ илгээх</span>
                     <span
                         id="loadingSpinner"
                         class="hidden animate-spin h-5 w-5 border-2 border-white/30 border-t-white rounded-full"
@@ -120,19 +121,19 @@
                 </button>
             </form>
 
-            <div class="mt-8 pt-6 border-t border-white/5 text-center">
-                <p class="text-sm text-slate-400">
-                    Login
+            <div class="mt-6 md:mt-8 pt-6 border-t border-white/5 text-center">
+                <p class="text-xs md:text-sm text-slate-400">
+                    Нэвтрэх
                     <a href="/login" class="text-indigo-400 hover:text-indigo-300 font-bold ml-1 transition-colors">Хуучин хэрэглэгчээр нэвтрэх.</a>
                 </p>
             </div>
         </div>
 
-        <div class="text-center mt-8 space-y-2">
-            <p class="text-[10px] text-slate-600 font-black uppercase tracking-[0.4em]">
+        <div class="text-center mt-6 md:mt-8 space-y-1">
+            <p class="text-[8px] md:text-[10px] text-slate-600 font-black uppercase tracking-[0.4em]">
                 Nexus Encryption Protocol v4.0
             </p>
-            <p class="text-[10px] text-slate-700 font-medium">
+            <p class="text-[8px] md:text-[10px] text-slate-700 font-medium">
                 &copy; 2026 CHOIFORGE TERMINAL. ALL RIGHTS RESERVED.
             </p>
         </div>
@@ -152,7 +153,7 @@
             const confirmPassword = document.getElementById("confirm_password").value;
 
             if (password !== confirmPassword) {
-                showFeedback("Security Alert: Key mismatch detected.", "red");
+                alert("Security Alert: Key mismatch detected.");
                 return;
             }
 
@@ -179,16 +180,11 @@
             } catch (error) {
                 alert("Terminal Error: Check Uplink Connection.");
             } finally {
-                btnText.textContent = "Establish Connection";
+                btnText.textContent = "Хүсэлтээ илгээх";
                 loadingSpinner.classList.add("hidden");
                 submitBtn.disabled = false;
             }
         });
-
-        // Helper for internal status messages if you add an alert box later
-        function showFeedback(msg, color) {
-            alert(msg);
-        }
     </script>
 </body>
 </html>
