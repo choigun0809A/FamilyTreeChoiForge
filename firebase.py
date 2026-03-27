@@ -124,9 +124,26 @@ def add_member(name, uniqueId = 0, gender = '', birthDate = ''):
     })
 
 def update_member(key, member = {}):
+    new_key = f'{member.get("name").lower()} ^ {member.get("uniqueId")}'
+    if new_key != key:
+        for child_key in member['children']:
+            child = members_ref.document(child_key).get().to_dict()
+            parents = child['parents']
+            parents.remove(key)
+            parents.append(new_key)
+            members_ref.document(child_key).update({'parents': parents})
+        
+        for parent_key in member['parents']:
+            parent = members_ref.document(parent_key).get().to_dict()
+            children = parent['children']
+            children.remove(key)
+            children.append(new_key)
+            members_ref.document(parent_key).update({'children': children})
     
-    members_ref.document(key).delete()
-    members_ref.document(f'{member.get("name").lower()} ^ {member.get("uniqueId")}').set(member)
+        members_ref.document(key).delete()
+        members_ref.document(new_key).set(member)
+    else:
+        members_ref.document(key).update(member)
 
 def check_member(name, uniqueId = 0):
     

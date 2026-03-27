@@ -138,7 +138,7 @@ def main():
         return redirect('/signup')
     
     
-    return render_template('main_update.html')
+    return render_template('main_page_optimized.html')
 
 @app.route('/delete_member', methods=['POST'])
 def delete_member():
