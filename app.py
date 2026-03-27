@@ -11,7 +11,6 @@ app.config['LOGIN_TIMEOUT_HOURS'] = 1
 
 def check_time():
     if "logged_in_time" not in session:
-        session.clear()
         return redirect('/logout')
 
     delta = datetime.now() - session["logged_in_time"]
