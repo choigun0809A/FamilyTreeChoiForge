@@ -19,15 +19,15 @@ def signup():
         GmailListed = firebase.GmailListed(email)
         if GmailListed:
             if not firebase.Verified(email):
-                return jsonify({'success': False, 'message': 'Email already exists! Wait For Verification.'}), 401
-            return jsonify({'success': False, 'message': 'Email already exists! Please Login.'}), 200
+                return jsonify({'success': False, 'message': 'Gmail үүссэн байна! Та хүсэлтээ батлуулна уу.'}), 401
+            return jsonify({'success': False, 'message': 'Gmail үүссэн байна! Та login хэсэгт нэвтэрнэ үү.'}), 200
 
         uid, isVerified = firebase.signup(email, password)
         
         if isVerified:
-            return jsonify({'success': True, 'message': 'Signup sent! Please Login.'}), 200
+            return jsonify({'success': True, 'message': 'Мэдээлэл амжилттай! Та login хэсэгт нэвтэрнэ үү.'}), 200
         else:
-            return jsonify({'success': False, 'message': 'Signup sent! Please wait for verification.'}), 200
+            return jsonify({'success': False, 'message': 'Хүсэлт амжилттай илгээгдлээ! Та хүсэлтээ батлуулна уу.'}), 200
 
     return render_template('signup.html')
 
@@ -43,15 +43,15 @@ def login():
         if uid and isVerified and correct_password:
             session['uid'] = uid
             session["verified"] = True
-            return jsonify({'success': True, 'message': 'Login successful! Redirecting...'}), 200
+            return jsonify({'success': True, 'message': 'Амжилттай нэвтэрлээ...'}), 200
         elif firebase.UidInRequests(uid) and not correct_password:
-            return jsonify({'success': False, 'message': 'Invalid email or password.'}), 401
+            return jsonify({'success': False, 'message': 'Gmail эсвэл нууц үг буруу.'}), 401
         elif firebase.UidInRequests(uid) and not isVerified:
-            return jsonify({'success': False, 'message': 'Please wait for verification.'}), 401
+            return jsonify({'success': False, 'message': 'Та хүсэлтээ батлуулна уу.'}), 401
         elif not firebase.UidInRequests(uid):
-            return jsonify({'success': False, 'message': 'Please signup first.'}), 401
+            return jsonify({'success': False, 'message': 'Та signup хэсэгт хүсэлтээ илгээнэ үү.'}), 401
         elif uid == None:
-            return jsonify({'success': False, 'message': 'Server error!'}), 401
+            return jsonify({'success': False, 'message': 'Сэрвэр эвдэрсэн!'}), 401
 
     return render_template('login.html')
 
@@ -84,7 +84,7 @@ def update_request():
 @app.route('/update_member', methods=['POST'])
 def update_member():
     firebase.update_member(request.json['key'], request.json['member'])
-    return jsonify({'success': True, 'message': 'Member updated successfully!'}), 200
+    return jsonify({'success': True, 'message': 'Гэр бүлийн мэдээлэл амжилттай хадгалагдлаа!'}), 200
 
 @app.route('/add_member', methods=['POST'])
 def add_member():
@@ -95,7 +95,7 @@ def add_member():
         uniqueId += 1
     
     firebase.add_member(request.json['name'], uniqueId, request.json['gender'], request.json['birthDate'])
-    return jsonify({'success': True, 'message': 'Member added successfully!'}), 200
+    return jsonify({'success': True, 'message': 'Гэр бүлийн гишүүн амжилттай нэмлээ!'}), 200
 
 @app.route('/adminCheck', methods=['POST']  )
 def admin_check():
