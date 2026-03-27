@@ -283,72 +283,72 @@
 
           let currentSearchTerm = "";
 
-function renderSidebar(filteredMembers = null) {
-  const container = document.getElementById("membersList");
-  container.innerHTML = "";
+          function renderSidebar(filteredMembers = null) {
+            const container = document.getElementById("membersList");
+            container.innerHTML = "";
 
-  const membersToRender = filteredMembers || Object.entries(allMembers).sort((a, b) =>
-    a[1].name.localeCompare(b[1].name)
-  );
+            const membersToRender = filteredMembers || Object.entries(allMembers).sort((a, b) =>
+              a[1].name.localeCompare(b[1].name)
+            );
 
-  if (membersToRender.length === 0) {
-    container.innerHTML = `
-      <div class="text-center py-12 text-slate-400">
-        <p class="text-2xl mb-2">😕</p>
-        <p class="text-sm">No members found</p>
-      </div>
-    `;
-    return;
-  }
+            if (membersToRender.length === 0) {
+              container.innerHTML = `
+                <div class="text-center py-12 text-slate-400">
+                  <p class="text-2xl mb-2">😕</p>
+                  <p class="text-sm">No members found</p>
+                </div>
+              `;
+              return;
+            }
 
-  membersToRender.forEach(([key, member]) => {
-    const emoji = member.gender === "Female" ? "👩" : "👨";
+            membersToRender.forEach(([key, member]) => {
+              const emoji = member.gender === "Female" ? "👩" : "👨";
 
-    const div = document.createElement("div");
-    div.className = `p-4 rounded-2xl border cursor-pointer transition-all flex items-center gap-4 group ${currentMemberKey === key 
-      ? "bg-indigo-50 border-indigo-200 ring-2 ring-indigo-500" 
-      : "bg-white border-slate-100 hover:border-indigo-200"}`;
+              const div = document.createElement("div");
+              div.className = `p-4 rounded-2xl border cursor-pointer transition-all flex items-center gap-4 group ${currentMemberKey === key 
+                ? "bg-indigo-50 border-indigo-200 ring-2 ring-indigo-500" 
+                : "bg-white border-slate-100 hover:border-indigo-200"}`;
 
-    div.innerHTML = `
-      <div class="text-3xl flex-shrink-0">${emoji}</div>
-      
-      <div class="flex-1 overflow-hidden">
-        <div class="font-bold text-lg truncate">${member.name}</div>
-        <div class="text-slate-400 text-xs font-mono">ID: ${member.uniqueId}</div>
-      </div>
+              div.innerHTML = `
+                <div class="text-3xl flex-shrink-0">${emoji}</div>
+                
+                <div class="flex-1 overflow-hidden">
+                  <div class="font-bold text-lg truncate">${member.name}</div>
+                  <div class="text-slate-400 text-xs font-mono">ID: ${member.uniqueId}</div>
+                </div>
 
-      <!-- Copy Button -->
-      <button onclick="event.stopImmediatePropagation(); copyMemberInfo('${member.name}', '${member.uniqueId}', this)" 
-              class="bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold w-7 h-7 rounded-xl flex items-center justify-center shadow-sm transition-all flex-shrink-0"
-              title="Copy Name and ID">
-        📋
-      </button>
-    `;
+                <!-- Copy Button -->
+                <button onclick="event.stopImmediatePropagation(); copyMemberInfo('${member.name}', '${member.uniqueId}', this)" 
+                        class="bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold w-7 h-7 rounded-xl flex items-center justify-center shadow-sm transition-all flex-shrink-0"
+                        title="Copy Name and ID">
+                  📋
+                </button>
+              `;
 
-    div.onclick = () => selectMember(key);
-    container.appendChild(div);
-  });
-}
+              div.onclick = () => selectMember(key);
+              container.appendChild(div);
+            });
+          }
 
-// New function: Filter members based on search input
-function filterMembers() {
-  const searchInput = document.getElementById("memberSearch");
-  currentSearchTerm = searchInput.value.toLowerCase().trim();
+          // New function: Filter members based on search input
+          function filterMembers() {
+            const searchInput = document.getElementById("memberSearch");
+            currentSearchTerm = searchInput.value.toLowerCase().trim();
 
-  if (!currentSearchTerm) {
-    renderSidebar();                    // Show all if search is empty
-    return;
-  }
+            if (!currentSearchTerm) {
+              renderSidebar();                    // Show all if search is empty
+              return;
+            }
 
-  const filtered = Object.entries(allMembers).filter(([key, member]) => {
-    return (
-      member.name.toLowerCase().includes(currentSearchTerm) ||
-      String(member.uniqueId).includes(currentSearchTerm)
-    );
-  }).sort((a, b) => a[1].name.localeCompare(b[1].name));
+            const filtered = Object.entries(allMembers).filter(([key, member]) => {
+              return (
+                member.name.toLowerCase().includes(currentSearchTerm) ||
+                String(member.uniqueId).includes(currentSearchTerm)
+              );
+            }).sort((a, b) => a[1].name.localeCompare(b[1].name));
 
-  renderSidebar(filtered);
-}
+            renderSidebar(filtered);
+          }
 
           function selectMember(key) {
             currentMemberKey = key;
