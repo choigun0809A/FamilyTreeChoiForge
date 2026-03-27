@@ -574,6 +574,7 @@
 
           async function addNewMember() {
             const name = document.getElementById("name").value.trim();
+            if (name.split(" ").length != 1) return alert("Name must be one word.");
             const gender = document.getElementById("gender").value;
             const birthDate = document.getElementById("birthDate").value;
 
