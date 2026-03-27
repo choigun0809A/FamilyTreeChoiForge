@@ -88,7 +88,11 @@
           >Ascendants (Parents)</span
         >
       </div>
-      <div id="rowParents" class="row-container custom-scroll" style="position: relative; flex: 1; align-items: center; justify-content: center;"></div>
+      <div
+        id="rowParents"
+        class="row-container custom-scroll flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scroll-smooth justify-start lg:justify-center"
+        style="position: relative"
+      ></div>
 
       <div class="generation-gap"></div>
 
@@ -98,7 +102,11 @@
           >Subject & Siblings</span
         >
       </div>
-      <div id="rowCurrent" class="row-container custom-scroll" style="position: relative; flex: 1; align-items: center; justify-content: center;"></div>
+      <div
+        id="rowCurrent"
+        class="row-container custom-scroll flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scroll-smooth justify-start lg:justify-center"
+        style="position: relative"
+      ></div>
 
       <div class="generation-gap"></div>
 
@@ -108,7 +116,11 @@
           >Descendants (Children)</span
         >
       </div>
-      <div id="rowChildren" class="row-container custom-scroll"></div>
+      <div
+        id="rowChildren"
+        class="row-container custom-scroll flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scroll-smooth justify-start lg:justify-center"
+        style="position: relative"
+      ></div>
     </div>
   </div>
 
@@ -129,124 +141,183 @@
 </section>
 
 {% endblock %} {% block details %}
-
 <aside
   id="detailsWrapper"
-  class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-sm lg:static lg:bg-transparent lg:p-0 lg:opacity-100 lg:pointer-events-auto lg:col-span-3 lg:block opacity-0 pointer-events-none transition-all"
+  class="fixed inset-0 z-[60] flex items-end justify-center lg:items-center p-0 lg:p-4 bg-slate-900/80 backdrop-blur-sm transition-all lg:static lg:bg-transparent lg:p-0 lg:opacity-100 lg:pointer-events-auto lg:col-span-3 lg:block opacity-0 pointer-events-none"
 >
   <div
-    class="bg-slate-900 rounded-3xl w-full max-w-lg lg:max-w-none lg:h-[85vh] max-h-[92vh] lg:max-h-none overflow-hidden shadow-2xl border border-white/10 flex flex-col"
+    class="bg-slate-900 rounded-t-[2.5rem] lg:rounded-[2.5rem] w-full max-w-md lg:max-w-md h-[92vh] lg:h-[85vh] lg:min-h-0 shadow-2xl relative border border-white/10 transition-all duration-300 overflow-hidden"
   >
-    <!-- Header -->
-    <div class="flex items-center justify-between p-6 border-b border-white/10 lg:hidden">
-      <h2 class="text-lg font-bold text-white">Member Information</h2>
-      <button
-        onclick="toggleDetails()"
-        class="text-3xl text-slate-400 hover:text-white transition-colors"
-      >
-        ×
-      </button>
-    </div>
+    <!-- Close button -->
+    <button
+      onclick="toggleDetails()"
+      class="lg:hidden absolute top-5 right-5 z-10 text-3xl text-white hover:text-slate-300 transition-colors w-10 h-10 flex items-center justify-center"
+    >
+      ×
+    </button>
 
-    <!-- Scrollable Content -->
-    <div id="detailsPanel" class="flex-1 overflow-y-auto custom-scroll p-6 space-y-8 lg:p-8">
-      
-      <header class="hidden lg:block">
-        <h2 class="text-xs font-black uppercase tracking-[0.3em] text-indigo-400 mb-2">
+    <!-- Scrollable Content Container -->
+    <div 
+      id="detailsPanel" 
+      class="h-full overflow-y-auto custom-scroll p-6 lg:p-8 space-y-8 flex flex-col text-white"
+    >
+      <header class="pt-2 lg:pt-0">
+        <h2 class="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-400 mb-1">
           Data Profile
         </h2>
-        <h3 class="text-2xl font-bold">Member Information</h3>
+        <h3 class="text-2xl font-bold text-white">Member Information</h3>
       </header>
 
-      <div class="space-y-6">
-        <!-- Legal Name -->
-        <div>
-          <label class="text-[10px] font-bold uppercase text-slate-500 ml-1">Legal Name</label>
-          <input
-            id="editName"
-            type="text"
-            class="w-full bg-slate-800/50 border border-slate-700 rounded-2xl px-5 py-4 mt-1 focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
-          />
-        </div>
-
-        <!-- Gender + Birth Date -->
-        <div class="grid grid-cols-2 gap-4">
+      <div class="flex-1 space-y-6">
+        <div class="space-y-5">
           <div>
-            <label class="text-[10px] font-bold uppercase text-slate-500 ml-1">Gender</label>
-            <select
-              id="editGender"
-              class="w-full bg-slate-800/50 border border-slate-700 rounded-2xl px-5 py-4 mt-1 outline-none"
-            >
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-          <div>
-            <label class="text-[10px] font-bold uppercase text-slate-500 ml-1">Birth Date</label>
+            <label class="text-[10px] font-bold uppercase text-slate-300 ml-1 block mb-1">Legal Name</label>
             <input
-              id="editBirthDate"
-              type="date"
-              class="w-full bg-slate-800/50 border border-slate-700 rounded-2xl px-5 py-4 mt-1 outline-none text-sm"
+              id="editName"
+              type="text"
+              class="w-full bg-slate-800/50 border border-slate-700 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-white placeholder:text-slate-400"
             />
           </div>
-        </div>
-      </div>
 
-      <!-- Save Button -->
-      <button
-        onclick="autoSave()"
-        class="w-full bg-indigo-600 hover:bg-indigo-500 py-4 rounded-2xl font-bold text-lg transition-all shadow-lg shadow-indigo-900/20"
-      >
-        Save Changes
-      </button>
-
-      <!-- Relationships Section -->
-      <div class="space-y-2 pt-6 border-t border-white/10">
-        <p class="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-3">
-          Link Relationships
-        </p>
-
-        <button
-          onclick="toggleParentForm()"
-          class="w-full bg-slate-800/50 hover:bg-slate-800 p-4 rounded-2xl text-left flex justify-between items-center group transition-all"
-        >
-          <span class="text-sm font-semibold">Assign Parent</span>
-          <span class="text-indigo-400 group-hover:translate-x-1 transition-transform">→</span>
-        </button>
-
-        <div id="parentForm" class="hidden bg-slate-800/70 p-5 rounded-2xl space-y-3 border border-indigo-500/20">
-          <input id="newParentName" placeholder="Parent Name" class="w-full bg-slate-900 px-4 py-3 rounded-xl text-sm" />
-          <input id="newParentId" placeholder="Parent ID" type="number" class="w-full bg-slate-900 px-4 py-3 rounded-xl text-sm" />
-          <button onclick="addParent()" class="w-full bg-indigo-600 py-3 rounded-xl text-sm font-bold">Link Parent</button>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="text-[10px] font-bold uppercase text-slate-300 ml-1 block mb-1">Gender</label>
+              <select
+                id="editGender"
+                class="w-full bg-slate-800/50 border border-slate-700 rounded-2xl px-5 py-4 outline-none text-white"
+              >
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-[10px] font-bold uppercase text-slate-300 ml-1 block mb-1">Birth Date</label>
+              <input
+                id="editBirthDate"
+                type="date"
+                class="w-full bg-slate-800/50 border border-slate-700 rounded-2xl px-5 py-4 outline-none text-white text-sm"
+              />
+            </div>
+          </div>
         </div>
 
         <button
-          onclick="toggleChildForm()"
-          class="w-full bg-slate-800/50 hover:bg-slate-800 p-4 rounded-2xl text-left flex justify-between items-center group transition-all"
+          onclick="autoSave()"
+          class="w-full bg-indigo-600 hover:bg-indigo-500 py-4 rounded-2xl font-bold text-lg transition-all shadow-lg shadow-indigo-900/20 text-white"
         >
-          <span class="text-sm font-semibold">Assign Child</span>
-          <span class="text-indigo-400 group-hover:translate-x-1 transition-transform">→</span>
+          Save Changes
         </button>
 
-        <div id="childForm" class="hidden bg-slate-800/70 p-5 rounded-2xl space-y-3 border border-indigo-500/20">
-          <input id="newChildName" placeholder="Child Name" class="w-full bg-slate-900 px-4 py-3 rounded-xl text-sm" />
-          <input id="newChildId" placeholder="Child ID" type="number" class="w-full bg-slate-900 px-4 py-3 rounded-xl text-sm" />
-          <button onclick="addChild()" class="w-full bg-indigo-600 py-3 rounded-xl text-sm font-bold">Link Child</button>
+        <!-- Relationships Section -->
+        <div class="space-y-2 pt-6 border-t border-white/10">
+          <p class="text-[10px] font-black uppercase tracking-widest text-slate-300 mb-3">
+            Link Relationships
+          </p>
+
+          <button
+            onclick="toggleParentForm()"
+            class="w-full bg-slate-800/40 hover:bg-slate-800 p-4 rounded-2xl text-left flex justify-between items-center group transition-all text-white"
+          >
+            <span class="text-sm font-semibold">Assign Parent</span>
+            <span class="text-indigo-400 group-hover:translate-x-1 transition-transform">→</span>
+          </button>
+
+          <div id="parentForm" class="hidden bg-slate-800/60 p-5 rounded-2xl space-y-3 border border-indigo-500/20">
+            <input 
+              id="newParentName" 
+              placeholder="Parent Name" 
+              class="w-full bg-slate-900 px-4 py-3 rounded-xl text-sm text-white placeholder:text-slate-400" 
+            />
+            <input 
+              id="newParentId" 
+              placeholder="Parent ID" 
+              type="number" 
+              class="w-full bg-slate-900 px-4 py-3 rounded-xl text-sm text-white placeholder:text-slate-400" 
+            />
+            <button onclick="addParent()" class="w-full bg-indigo-600 py-3 rounded-xl text-sm font-bold text-white">
+              Link Parent
+            </button>
+          </div>
+
+          <button
+            onclick="toggleChildForm()"
+            class="w-full bg-slate-800/40 hover:bg-slate-800 p-4 rounded-2xl text-left flex justify-between items-center group transition-all text-white"
+          >
+            <span class="text-sm font-semibold">Assign Child</span>
+            <span class="text-indigo-400 group-hover:translate-x-1 transition-transform">→</span>
+          </button>
+
+          <div id="childForm" class="hidden bg-slate-800/60 p-5 rounded-2xl space-y-3 border border-indigo-500/20">
+            <input 
+              id="newChildName" 
+              placeholder="Child Name" 
+              class="w-full bg-slate-900 px-4 py-3 rounded-xl text-sm text-white placeholder:text-slate-400" 
+            />
+            <input 
+              id="newChildId" 
+              placeholder="Child ID" 
+              type="number" 
+              class="w-full bg-slate-900 px-4 py-3 rounded-xl text-sm text-white placeholder:text-slate-400" 
+            />
+            <button onclick="addChild()" class="w-full bg-indigo-600 py-3 rounded-xl text-sm font-bold text-white">
+              Link Child
+            </button>
+          </div>
         </div>
       </div>
 
       <!-- Delete Button -->
-      <div class="pt-6 border-t border-white/10">
+      <div class="pt-4 border-t border-white/10">
         <button
           id="deleteMemberBtn"
-          class="w-full group flex items-center justify-center gap-2 py-4 rounded-2xl border border-red-500/30 text-red-500 hover:bg-red-500 hover:text-white transition-all duration-300 font-bold text-sm"
+          class="w-full group flex items-center justify-center gap-2 py-4 rounded-2xl border border-red-500/30 text-red-400 hover:bg-red-500 hover:text-white transition-all duration-300 font-bold text-sm"
         >
-          <i class="fas fa-trash-alt text-xs"></i>
+          <i class="fas fa-trash-alt text-xs group-hover:shake"></i>
           Delete Identity Record
         </button>
       </div>
 
+      <!-- Delete Modal -->
+      <div
+        id="deleteMemberModal"
+        class="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm hidden"
+      >
+        <div class="bg-slate-900 border border-white/10 rounded-[2.5rem] p-8 max-w-sm w-full shadow-2xl transform transition-all text-white">
+          <div class="w-16 h-16 bg-red-500/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <i class="fas fa-exclamation-triangle text-2xl text-red-500"></i>
+          </div>
+
+          <h3 class="text-xl font-bold text-white text-center">Confirm Deletion</h3>
+          <p class="text-slate-400 text-sm text-center mt-2 leading-relaxed">
+            This action is irreversible. All biological links and generational data for this identity will be purged from the Nexus.
+          </p>
+
+          <div class="grid grid-cols-2 gap-4 mt-8">
+            <button
+              id="cancelDeleteBtn"
+              class="py-4 rounded-2xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm transition-colors"
+            >
+              Abort
+            </button>
+            <button
+              id="confirmDeleteBtn"
+              class="py-4 rounded-2xl bg-red-600 hover:bg-red-500 text-white font-bold text-sm shadow-lg shadow-red-900/20 transition-all active:scale-95"
+            >
+              Purge Data
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- No details message -->
+    <div
+      id="noDetailsMsg"
+      class="h-full flex flex-col items-center justify-center text-slate-400 text-center opacity-40 hidden absolute inset-0"
+    >
+      <p class="text-4xl mb-4">📝</p>
+      <p class="text-sm font-medium text-white">Select a profile to edit</p>
     </div>
   </div>
 </aside>
