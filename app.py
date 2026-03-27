@@ -12,7 +12,7 @@ app.config['LOGIN_TIMEOUT_HOURS'] = 1
 def check_time():
     if "logged_in_time" not in session:
         session.clear()
-        return redirect('/login')
+        return redirect('/logout')
 
     delta = datetime.now() - session["logged_in_time"]
     if delta.total_seconds() * 60 * 60 > app.config['LOGIN_TIMEOUT_HOURS']:
@@ -155,7 +155,7 @@ def main():
 @app.route('/logout')
 def logout():
     session.clear()
-    return redirect('/')
+    return redirect('/login')
 
 @app.route('/delete_member', methods=['POST'])
 def delete_member():
