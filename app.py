@@ -10,6 +10,10 @@ app.config['LOGIN_TIMEOUT_HOURS'] = 1
 
 
 def check_time():
+    if "logged_in_time" not in session:
+        session.clear()
+        return redirect('/login')
+
     delta = datetime.now() - session["logged_in_time"]
     if delta.total_seconds() * 60 * 60 > app.config['LOGIN_TIMEOUT_HOURS']:
         return redirect('/logout')
