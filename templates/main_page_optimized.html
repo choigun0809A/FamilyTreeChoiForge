@@ -24,7 +24,7 @@
     </button>
     <div>
       <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">
-        Family Heritage
+        Ургийн бичиг
       </h1>
       <p class="text-sm text-slate-500 font-medium hidden sm:block">
         Nexus Biological Database
@@ -35,7 +35,7 @@
     onclick="showAddForm()"
     class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-3 rounded-2xl shadow-lg shadow-indigo-200 transition-all active:scale-95 flex items-center gap-2"
   >
-    <span class="text-xl">+</span> Add Member
+    <span class="text-xl">+</span> Шинэ гишүүн нэмэх
   </button>
 </header>
 
@@ -47,7 +47,7 @@
   <!-- Header -->
   <div class="p-6 border-b border-slate-100 flex justify-between items-center">
     <h2 class="text-lg font-bold text-slate-800 uppercase tracking-wider">
-      Directory
+      Бүх гишүүн
     </h2>
     <button
       onclick="toggleSidebar()"
@@ -88,14 +88,14 @@
     class="p-6 border-b border-slate-100 flex justify-between items-center bg-white/50 backdrop-blur-sm sticky top-0 z-30"
   >
     <h2 class="text-lg font-bold text-slate-800 uppercase tracking-wider">
-      Visualization
+      Гэр бүлийн самбар
     </h2>
     <button
       id="mobileEditBtn"
       onclick="toggleDetails()"
       class="lg:hidden bg-slate-900 text-white px-4 py-2 rounded-xl text-xs font-bold"
     >
-      Edit Data
+      Сонгсон гишүүний мэдээлэл өөрчлөх
     </button>
   </div>
 
@@ -185,9 +185,9 @@
         <h2
           class="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-400 mb-1"
         >
-          Data Profile
+          Дата самбар
         </h2>
-        <h3 class="text-2xl font-bold text-white">Member Information</h3>
+        <h3 class="text-2xl font-bold text-white">Гишүүний Мэдээлэл</h3>
       </header>
 
       <div class="flex-1 space-y-6">
@@ -195,7 +195,7 @@
           <div>
             <label
               class="text-[10px] font-bold uppercase text-slate-300 ml-1 block mb-1"
-              >Legal Name</label
+              >Нэр</label
             >
             <input
               id="editName"
@@ -208,21 +208,21 @@
             <div>
               <label
                 class="text-[10px] font-bold uppercase text-slate-300 ml-1 block mb-1"
-                >Gender</label
+                >Хүйс</label
               >
               <select
                 id="editGender"
                 class="w-full bg-slate-800/50 border border-slate-700 rounded-2xl px-5 py-4 outline-none text-white"
               >
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
+                <option value="Male">Эр</option>
+                <option value="Female">Эм</option>
+                <option value="Other">Бусад</option>
               </select>
             </div>
             <div>
               <label
                 class="text-[10px] font-bold uppercase text-slate-300 ml-1 block mb-1"
-                >Birth Date</label
+                >Төрсөн он сар</label
               >
               <input
                 id="editBirthDate"
@@ -237,21 +237,21 @@
           onclick="autoSave()"
           class="w-full bg-indigo-600 hover:bg-indigo-500 py-4 rounded-2xl font-bold text-lg transition-all shadow-lg shadow-indigo-900/20 text-white"
         >
-          Save Changes
+          Шинэчлэх
         </button>
 
         <div class="space-y-2 pt-6 border-t border-white/10">
           <p
             class="text-[10px] font-black uppercase tracking-widest text-slate-300 mb-3"
           >
-            Link Relationships
+            Шинэ холбоо үүсгэх
           </p>
 
           <button
             onclick="toggleParentForm()"
             class="w-full bg-slate-800/40 hover:bg-slate-800 p-4 rounded-2xl text-left flex justify-between items-center group transition-all text-white"
           >
-            <span class="text-sm font-semibold">Assign Parent</span>
+            <span class="text-sm font-semibold">Эцэг эхээ холбох</span>
             <span
               class="text-indigo-400 group-hover:translate-x-1 transition-transform"
               >→</span
@@ -271,7 +271,7 @@
               onclick="addParent()"
               class="w-full bg-indigo-600 py-3 rounded-xl text-sm font-bold text-white"
             >
-              Link Parent
+              Эцэг эхээ холбох
             </button>
           </div>
 
@@ -279,7 +279,7 @@
             onclick="toggleChildForm()"
             class="w-full bg-slate-800/40 hover:bg-slate-800 p-4 rounded-2xl text-left flex justify-between items-center group transition-all text-white"
           >
-            <span class="text-sm font-semibold">Assign Child</span>
+            <span class="text-sm font-semibold">Хүүхдээ холбох</span>
             <span
               class="text-indigo-400 group-hover:translate-x-1 transition-transform"
               >→</span
@@ -299,7 +299,7 @@
               onclick="addChild()"
               class="w-full bg-indigo-600 py-3 rounded-xl text-sm font-bold text-white"
             >
-              Link Child
+              Хүүхэд үрсээ холбох
             </button>
           </div>
         </div>
@@ -311,7 +311,7 @@
           class="w-full group flex items-center justify-center gap-2 py-4 rounded-2xl border border-red-500/30 text-red-400 hover:bg-red-500 hover:text-white transition-all duration-300 font-bold text-sm"
         >
           <i class="fas fa-trash-alt text-xs group-hover:shake"></i>
-          Delete Identity Record
+          Гэр бүлийн гишүүнийг устгах
         </button>
       </div>
     </div>
@@ -321,7 +321,7 @@
       class="h-full w-full bg-slate-900 z-10 flex flex-col items-center justify-center text-slate-400 text-center hidden absolute inset-0"
     >
       <p class="text-4xl mb-4">📝</p>
-      <p class="text-sm font-medium text-white">Select a profile to edit</p>
+      <p class="text-sm font-medium text-white">Гишүүн сонгож байж өөрчлөлт гаргана.</p>
     </div>
   </div>
 
@@ -340,8 +340,7 @@
 
       <h3 class="text-xl font-bold text-white text-center">Confirm Deletion</h3>
       <p class="text-slate-400 text-sm text-center mt-2 leading-relaxed">
-        This action is irreversible. All biological links and generational data
-        for this identity will be purged from the Nexus.
+        Энэ үйлдлийг буцаах боломгүйг анхаарна уу. Энэ гишүүнтэй холбогдох бүх холбоосууд тасарна.
       </p>
 
       <div class="grid grid-cols-2 gap-4 mt-8">
@@ -349,13 +348,13 @@
           id="cancelDeleteBtn"
           class="py-4 rounded-2xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm transition-colors"
         >
-          Abort
+          Цуцлах
         </button>
         <button
           id="confirmDeleteBtn"
           class="py-4 rounded-2xl bg-red-600 hover:bg-red-500 text-white font-bold text-sm shadow-lg shadow-red-900/20 transition-all active:scale-95"
         >
-          Purge Data
+          Мэдээлэл устгах
         </button>
       </div>
     </div>
