@@ -1,10 +1,18 @@
 from flask import Flask, render_template, request, session, redirect, jsonify, url_for
 import firebase, json, os
+from datetime import datetime
 
 app = Flask(__name__)
 env = os.environ['WEB_SECRETKEY_FAM_TREE']
 app.config['SECRET_KEY'] = env
+app.config['LOGIN_TIMEOUT_HOURS'] = 1 
     
+
+
+def check_time():
+    delta = datetime.now() - session["logged_in_time"]
+    if delta.total_seconds() * 60 * 60 > app.config['LOGIN_TIMEOUT_HOURS']:
+        return redirect('/logout')
 
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -40,6 +48,8 @@ def login():
         if uid and isVerified and correct_password:
             session['uid'] = uid
             session["verified"] = True
+            session["logged_in_time"] = datetime.now()
+
             return jsonify({'success': True, 'message': 'Амжилттай нэвтэрлээ...'}), 200
         elif firebase.UidInRequests(uid) and not correct_password:
             return jsonify({'success': False, 'message': 'Gmail эсвэл нууц үг буруу.'}), 401
@@ -134,8 +144,14 @@ def main():
     else:
         return redirect('/signup')
     
+    check_time()
     
     return render_template('main_page_optimized.html')
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect('/')
 
 @app.route('/delete_member', methods=['POST'])
 def delete_member():
