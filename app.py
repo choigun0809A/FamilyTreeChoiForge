@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, session, redirect, jsonify, url_for
 import firebase, json, os
-from datetime import datetime
+from datetime import datetime, timezone
 
 app = Flask(__name__)
 env = os.environ['WEB_SECRETKEY_FAM_TREE']
@@ -13,7 +13,7 @@ def check_time():
     if "logged_in_time" not in session:
         return redirect('/logout')
 
-    delta = datetime.now() - session["logged_in_time"]
+    delta = datetime.now(timezone.utc) - session["logged_in_time"]
     if delta.total_seconds() * 60 * 60 > app.config['LOGIN_TIMEOUT_HOURS']:
         return redirect('/logout')
 
@@ -51,7 +51,7 @@ def login():
         if uid and isVerified and correct_password:
             session['uid'] = uid
             session["verified"] = True
-            session["logged_in_time"] = datetime.now()
+            session["logged_in_time"] = datetime.now(timezone.utc)
 
             return jsonify({'success': True, 'message': 'Амжилттай нэвтэрлээ...'}), 200
         elif firebase.UidInRequests(uid) and not correct_password:
