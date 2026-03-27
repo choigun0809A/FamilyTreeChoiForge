@@ -590,8 +590,9 @@
           }
 
           async function addParent() {
-            const name = document.getElementById("newParentName").value.trim();
-            const id = document.getElementById("newParentId").value;
+            const splitted = document.getElementById("newParentName").value.trim().split(' ');
+            const name = splitted[0];
+            const id = splitted[1].replace('(', '').replace(')', '');
             if (!name || !id) return alert("Name and ID are required");
 
             const parentKey = `${String(name).toLowerCase()} ^ ${id}`;
@@ -632,8 +633,9 @@
           }
 
           async function addChild() {
-            const name = document.getElementById("newChildName").value.trim();
-            const id = document.getElementById("newChildId").value;
+            const splitted = document.getElementById("newChildName").value.trim().split(' ');
+            const name = splitted[0];
+            const id = splitted[1].replace('(', '').replace(')', '');
             if (!name || !id) return alert("Name and ID are required");
 
             const childKey = `${String(name).toLowerCase()} ^ ${id}`;
