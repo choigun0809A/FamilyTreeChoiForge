@@ -89,11 +89,13 @@ def update_member():
 
 @app.route('/add_member', methods=['POST'])
 def add_member():
+    print("adding member")
     uniqueId = -1
     all_members = firebase.get_all_members().keys()
     while True:
         uniqueId += 1
-        unique_key = f"{request.json['name']} ^ {uniqueId}"
+        unique_key = f"{request.json['name'].lower()} ^ {uniqueId}"
+        print(f'unique key: {unique_key}, is it in all members: {unique_key in all_members}')
         if unique_key not in all_members:
             break
     
