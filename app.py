@@ -9,17 +9,6 @@ app.config['LOGIN_TIMEOUT_HOURS'] = 1
     
 
 
-def check_time():
-    if "logged_in_time" not in session:
-        return redirect('/logout')
-
-    delta = datetime.now(timezone.utc) - session["logged_in_time"]
-    print(delta.total_seconds() / 60 / 60)
-    if delta.total_seconds() > app.config['LOGIN_TIMEOUT_HOURS'] * 60 * 60:
-
-        return redirect('/logout')
-
-
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
@@ -149,14 +138,20 @@ def main():
     else:
         return redirect('/signup')
     
-    check_time()
+
+    if "logged_in_time" not in session:
+        session.clear()
+        print("session expired")
+        return redirect('/login')
+
+    delta = datetime.now(timezone.utc) - session["logged_in_time"]
+    if delta.total_seconds() / 60 / 60 > app.config['LOGIN_TIMEOUT_HOURS']:
+        session.clear()
+        print("session expired")
+        return redirect('/login')
     
     return render_template('main_page_optimized.html')
 
-@app.route('/logout')
-def logout():
-    session.clear()
-    return redirect('/login')
 
 @app.route('/delete_member', methods=['POST'])
 def delete_member():
