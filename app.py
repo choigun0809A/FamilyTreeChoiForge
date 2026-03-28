@@ -89,11 +89,13 @@ def update_member():
 
 @app.route('/add_member', methods=['POST'])
 def add_member():
-    uniqueId = 0
+    uniqueId = -1
+    all_members = firebase.get_all_members().keys()
     while True:
-        if not firebase.check_member(request.json['name'], uniqueId):
-            break
         uniqueId += 1
+        unique_key = f"{request.json['name']} ^ {uniqueId}"
+        if unique_key not in all_members:
+            break
     
     firebase.add_member(request.json['name'], uniqueId, request.json['gender'], request.json['birthDate'])
     return jsonify({'success': True, 'message': 'Гэр бүлийн гишүүн амжилттай нэмлээ!'}), 200

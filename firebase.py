@@ -150,7 +150,6 @@ def check_member(name, uniqueId = 0):
     return members_ref.document(f"{name} ^ {uniqueId}").get().exists
 
 def get_member(name, uniqueId = 0):
-    
     return members_ref.document(f"{name} ^ {uniqueId}").get().to_dict()
 
 def get_all_members():
