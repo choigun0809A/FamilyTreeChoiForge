@@ -14,7 +14,9 @@ def check_time():
         return redirect('/logout')
 
     delta = datetime.now(timezone.utc) - session["logged_in_time"]
+    print(delta.total_seconds() / 60 / 60)
     if delta.total_seconds() > app.config['LOGIN_TIMEOUT_HOURS'] * 60 * 60:
+
         return redirect('/logout')
 
 
